@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/04 21:56:08 by lprates           #+#    #+#             */
-/*   Updated: 2022/12/04 22:53:34 by lprates          ###   ########.fr       */
+/*   Updated: 2022/12/06 20:25:12 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ namespace ft {
 			}
 
 			// have to check the friend operator+ function
-			/*friend iterator operator+(const difference_type& n, const iterator& ref)
+			/*iterator operator+(const difference_type& n, const iterator& ref)
             {
                 return (ref + n);
             }*/
