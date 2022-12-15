@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/27 02:12:07 by lprates           #+#    #+#             */
-/*   Updated: 2022/12/04 22:55:53 by lprates          ###   ########.fr       */
+/*   Updated: 2022/12/15 16:52:06 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ namespace ft {
 			typedef typename allocator_type::const_pointer		const_pointer;
 			typedef ft::iterator<value_type>					iterator;
 			typedef ft::iterator<const value_type> 				const_iterator;
-			typedef std::reverse_iterator<iterator> 			reverse_iterator;
-			typedef std::reverse_iterator<const_iterator> 		const_reverse_iterator;
+			typedef ft::reverse_iterator<iterator> 			reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator> 		const_reverse_iterator;
 
 			//TODO: Default constructor. Constructs an empty container with a default-constructed allocator.
 			vector();
