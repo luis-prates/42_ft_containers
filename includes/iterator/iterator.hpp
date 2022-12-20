@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/04 21:56:08 by lprates           #+#    #+#             */
-/*   Updated: 2022/12/06 20:25:12 by lprates          ###   ########.fr       */
+/*   Updated: 2022/12/20 02:08:46 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <cstddef>
 # include <iterator>
+# include "iterator_traits.hpp"
 
 namespace ft {
 	template <typename T>
@@ -24,7 +25,7 @@ namespace ft {
 			typedef ptrdiff_t						difference_type;
 			typedef T								*pointer;
 			typedef T								&reference;
-			typedef std::random_access_iterator_tag	iterator_category;
+			typedef ft::random_access_iterator_tag	iterator_category;
 
 			iterator() : _ptr(NULL) {}
 
@@ -75,7 +76,7 @@ namespace ft {
 				return (*this);
 			}
 
-			iterator &operator++(int) {
+			iterator operator++(int) {
 				iterator it(*this);
 				operator++();
 				return (it);
@@ -86,7 +87,7 @@ namespace ft {
 				return (*this);
 			}
 
-			iterator &operator+(const difference_type &n) const {
+			iterator operator+(const difference_type &n) const {
 				iterator it(*this);
 				it += n;
 				return (it);

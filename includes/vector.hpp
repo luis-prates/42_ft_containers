@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/27 02:12:07 by lprates           #+#    #+#             */
-/*   Updated: 2022/12/19 00:51:44 by lprates          ###   ########.fr       */
+/*   Updated: 2022/12/20 01:49:21 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,12 @@
 #include <iostream>
 #include <typeinfo>
 #include <sstream>
-#include "iterator.hpp"
-#include "iterator_traits.hpp"
-#include "reverse_iterator.hpp"
-#include "lexicographical_compare.hpp"
-#include "equal.hpp"
+#include "iterator/iterator.hpp"
+#include "iterator/iterator_traits.hpp"
+#include "iterator/reverse_iterator.hpp"
+#include "utils/lexicographical_compare.hpp"
+#include "utils/equal.hpp"
+#include "utils/enable_if.hpp"
 
 #ifndef VECTOR_HPP
 # define VECTOR_HPP
@@ -93,9 +94,6 @@ namespace ft {
 					_alloc.deallocate(_ptr, _capacity);
 				_capacity = 0;
 			};
-
-			// Assignment operator
-			vector& operator=( const vector& rhs );
 
 			void clear() {
 				for (size_type i = 0; i < _size; i++)
@@ -190,7 +188,7 @@ namespace ft {
 
 			vector& operator=(const vector& x) {
 				if (this != &x)
-                	assign(x.begin(), x.end());
+					assign(x.begin(), x.end());
 				return (*this);
 			}
 			
@@ -270,7 +268,7 @@ namespace ft {
 				std::copy(idx_ptr, end(), idx_ptr + n);
 				while (n--)
 				{
-					_alloc.construct(ptr + n, val);
+					_alloc.construct(idx_ptr + n, val);
 					_size++;
 				}
 			}
@@ -360,7 +358,7 @@ namespace ft {
 
 	template <class T, class Alloc>
 	bool operator>(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
-		return ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end())
+		return ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end());
 	}
 
 	template <class T, class Alloc>
