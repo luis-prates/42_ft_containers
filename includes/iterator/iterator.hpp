@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/04 21:56:08 by lprates           #+#    #+#             */
-/*   Updated: 2022/12/20 02:08:46 by lprates          ###   ########.fr       */
+/*   Updated: 2022/12/23 19:45:59 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,130 +14,195 @@
 # define ITERATOR_HPP
 
 # include <cstddef>
-# include <iterator>
 # include "iterator_traits.hpp"
 
+struct random_access_iterator_tag;
+
 namespace ft {
+
+	template <typename Category, typename T, typename Distance = ptrdiff_t,
+          typename Pointer = T *, typename Reference = T &>
+	struct iterator {
+		typedef T value_type;
+		typedef Distance difference_type;
+		typedef Pointer pointer;
+		typedef Reference reference;
+		typedef Category iterator_category;
+	};
+	
 	template <typename T>
-	class iterator {
+	class random_access_iterator : public ft::iterator< random_access_iterator_tag, T > {
 		public:
-			typedef T								value_type;
-			typedef ptrdiff_t						difference_type;
-			typedef T								*pointer;
-			typedef T								&reference;
-			typedef ft::random_access_iterator_tag	iterator_category;
+			typedef typename ft::iterator< ft::random_access_iterator_tag, T >::value_type			value_type;
+        	typedef typename ft::iterator< ft::random_access_iterator_tag, T >::difference_type		difference_type;
+        	typedef typename ft::iterator< ft::random_access_iterator_tag, T >::pointer				pointer;
+        	typedef typename ft::iterator< ft::random_access_iterator_tag, T >::reference			reference;
+        	typedef typename ft::iterator< ft::random_access_iterator_tag, T >::iterator_category	iterator_category;
 
-			iterator() : _ptr(NULL) {}
+			random_access_iterator() : _ptr(NULL) {}
 
-			iterator(pointer ptr) : _ptr(ptr) {}
+			random_access_iterator(pointer ptr) : _ptr(ptr) {}
 			
-			iterator(const iterator &ref) : _ptr(ref._ptr) {}
+			random_access_iterator(const random_access_iterator &ref) : _ptr(ref._ptr) {}
 
-			virtual ~iterator() {}
+			virtual ~random_access_iterator() {}
 
-			iterator &operator=(const iterator &ref) {
+			random_access_iterator &operator=(const random_access_iterator &ref) {
 				if (this != &ref)
 					_ptr = ref._ptr;
 				return (*this);
 			}
 
-			operator iterator<const value_type>() const {
-				return iterator<const value_type>(_ptr);
+			pointer	base( void ) const {
+				return ( this->_ptr );
 			}
 
-			iterator &operator--() {
-				--_ptr;
+			operator random_access_iterator<const value_type>() const {
+				return random_access_iterator<const value_type>(_ptr);
+			}
+
+			random_access_iterator &operator--() {
+				this->_ptr--;
 				return (*this);
 			}
 
-			iterator &operator--(int) {
-				iterator it(*this);
-				operator--();
+			random_access_iterator operator--(int) {
+				random_access_iterator it(*this);
+				this->_ptr--;
 				return (it);
 			}
 
-			iterator &operator-=(const difference_type &n) {
-				_ptr -= n;
+			random_access_iterator &operator-=(const difference_type &n) {
+				this->_ptr -= n;
 				return (*this);
 			}
 
-			iterator &operator-(const difference_type &n) const {
-				iterator it(*this);
-				it -= n;
-				return (it);
+			random_access_iterator operator-(const difference_type &n) const {
+				return (this->_ptr - n);
 			}
 
-			difference_type operator-(const iterator &ref) const {
-				return (_ptr - ref._ptr);
+			difference_type operator-(const random_access_iterator<value_type> &ref) const {
+				return ( base() - ref.base());
 			}
 
-			iterator &operator++() {
-				++_ptr;
+			random_access_iterator &operator++() {
+				this->_ptr++;
 				return (*this);
 			}
 
-			iterator operator++(int) {
-				iterator it(*this);
+			random_access_iterator operator++(int) {
+				random_access_iterator it(*this);
 				operator++();
 				return (it);
 			}
 
-			iterator &operator+=(const difference_type &n) {
-				_ptr += n;
+			random_access_iterator &operator+=(const difference_type &n) {
+				this->_ptr += n;
 				return (*this);
 			}
 
-			iterator operator+(const difference_type &n) const {
-				iterator it(*this);
-				it += n;
+			random_access_iterator operator+(const difference_type &n) const {
+				random_access_iterator it(this->_ptr + n);
 				return (it);
 			}
 
 			// have to check the friend operator+ function
-			/*iterator operator+(const difference_type& n, const iterator& ref)
+			friend random_access_iterator operator+(const difference_type& n, const random_access_iterator& ref)
             {
-                return (ref + n);
-            }*/
-
-			bool operator==(const iterator& ref) const {
-                return (_ptr == ref._ptr);
+                return (ref.base() + n);
             }
 
-            bool operator!=(const iterator& ref) const {
-                return (!(_ptr == ref._ptr));
+			bool operator==(const random_access_iterator &ref) const {
+                return (base() == ref.base());
             }
 
-            bool operator<(const iterator& ref) const {
-                return (_ptr < ref._ptr);
+            bool operator!=(const random_access_iterator &ref) const {
+                return (!(base() == ref.base()));
             }
 
-			bool operator<=(const iterator& ref) const {
-                return (_ptr <= ref._ptr);
+            bool operator<(const random_access_iterator &ref) const {
+                return (base() < ref.base());
             }
 
-			bool operator>(const iterator& ref) const {
-                return (_ptr > ref._ptr);
+			bool operator<=(const random_access_iterator &ref) const {
+                return (base() <= ref.base());
             }
 
-			bool operator>=(const iterator& ref) const {
-                return (_ptr >= ref._ptr);
+			bool operator>(const random_access_iterator &ref) const {
+                return (base() > ref.base());
+            }
+
+			bool operator>=(const random_access_iterator &ref) const {
+                return (base() >= ref.base());
             }
 			
 			reference operator*() const {
-				return (*_ptr);
+				return (*this->_ptr);
 			}
 
 			pointer operator->() const {
-				return (_ptr);
+				return (&(*this->_ptr));
 			}
 
 			reference operator[](const difference_type &n) const {
-				return (_ptr[n]);
+				return (this->_ptr[n]);
 			}
 			
 		private:
-			T* _ptr;
+			pointer _ptr;
 	};
+
+	/*template <typename It>
+	typename random_access_iterator<It>::difference_type operator-(const random_access_iterator<It>& lhs, const random_access_iterator<It>& rhs) {
+		return (lhs.base() - rhs.base());
+	}*/
+
+	template <typename Ite1, typename Ite2>
+	bool	operator!=(random_access_iterator<Ite1> &lhs, random_access_iterator<Ite2> &rhs) {
+		return (lhs.base() != rhs.base());
+	}
+
+	template <typename Ite1, typename Ite2>
+	bool	operator==(const random_access_iterator<Ite1> &lhs, const random_access_iterator<Ite2> &rhs) {
+		return (lhs.base() == rhs.base());
+	}
+
+	template <typename Ite1, typename Ite2>
+	bool	operator<(const random_access_iterator<Ite1> &lhs, const random_access_iterator<Ite2> &rhs) {
+		return (lhs.base() < rhs.base());
+	}
+
+	template <typename Ite1, typename Ite2>
+	bool	operator<=(const random_access_iterator<Ite1> &lhs, const random_access_iterator<Ite2> &rhs) {
+		return (lhs.base() <= rhs.base());
+	}
+	
+	template <typename Ite1, typename Ite2>
+	bool	operator>(const random_access_iterator<Ite1> &lhs, const random_access_iterator<Ite2> &rhs) {
+		return (lhs.base() > rhs.base());
+	}
+
+	template <typename Ite1, typename Ite2>
+	bool	operator>=(const random_access_iterator<Ite1> &lhs, const random_access_iterator<Ite2> &rhs) {
+		return (lhs.base() >= rhs.base());
+	}
+
+	template <typename Ite1, typename Ite2>
+	ptrdiff_t operator-(const random_access_iterator<Ite1> &lhs, const random_access_iterator<Ite2> &rhs) {
+		return (lhs.base() - rhs.base());
+	}
+
+	template <typename Ite>
+	ptrdiff_t	itlen(Ite first, Ite last) {
+		ptrdiff_t	i = 0;
+
+		while (first != last)
+		{
+			++first;
+			++i;
+		}
+		return (i);
+	}
 }
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 16:52:26 by lprates           #+#    #+#             */
-/*   Updated: 2022/12/18 20:42:42 by lprates          ###   ########.fr       */
+/*   Updated: 2022/12/23 19:54:25 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ namespace ft {
 			reverse_iterator(const reverse_iterator<It>& it): _it(it.base()) {}
 			
 			iterator_type base() const {
-				return (_it + 1);
+				return (_it);
 			}
 
 			reference operator*() const {
@@ -74,9 +74,9 @@ namespace ft {
 				return (reverse_iterator(_it + n));
 			}
 
-			difference_type operator- (const reverse_iterator& rhs) const {
+			/*difference_type operator- (const reverse_iterator& rhs) const {
 				return (rhs.base() - this->base());
-			}
+			}*/
 
 			reverse_iterator& operator--() {
 				++_it;
@@ -141,11 +141,11 @@ namespace ft {
 
 	template <typename Iterator>
 	reverse_iterator<Iterator> operator+(typename reverse_iterator<Iterator>::difference_type n, const reverse_iterator<Iterator>& it) {
-		return (it.base() - n);
+		return (reverse_iterator<Iterator>(it.base() - n));
 	}
 
-	template <typename Iterator>
-	typename reverse_iterator<Iterator>::difference_type operator-(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs) {
+	template <typename Iterator1, typename Iterator2>
+	typename reverse_iterator<Iterator1>::difference_type operator-(const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs) {
 		return (rhs.base() - lhs.base());
 	}
 

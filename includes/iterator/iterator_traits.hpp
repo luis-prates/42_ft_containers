@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 21:41:20 by lprates           #+#    #+#             */
-/*   Updated: 2022/12/20 01:46:57 by lprates          ###   ########.fr       */
+/*   Updated: 2022/12/21 22:48:02 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,20 +48,20 @@ namespace ft {
 	class iterator_traits<T*> {
 		public:
 			typedef T								value_type;
-			typedef std::ptrdiff_t					difference_type;
+			typedef ptrdiff_t						difference_type;
 			typedef T								*pointer;
 			typedef T								&reference;
-			typedef random_access_iterator_tag		iterator_category;
+			typedef ft::random_access_iterator_tag	iterator_category;
 	};
 
 	template <typename T>
 	class iterator_traits<const T*> {
 		public:
 			typedef T								value_type;
-			typedef std::ptrdiff_t					difference_type;
+			typedef ptrdiff_t						difference_type;
 			typedef const T							*pointer;
 			typedef const T							&reference;
-			typedef random_access_iterator_tag		iterator_category;
+			typedef ft::random_access_iterator_tag	iterator_category;
 	};
 }
 
