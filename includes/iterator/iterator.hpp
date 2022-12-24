@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/04 21:56:08 by lprates           #+#    #+#             */
-/*   Updated: 2022/12/24 18:50:57 by lprates          ###   ########.fr       */
+/*   Updated: 2022/12/24 21:00:22 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ namespace ft {
 			}
 
 			random_access_iterator operator-(const difference_type &n) const {
-				return (this->_ptr - n);
+				return (random_access_iterator(this->_ptr - n));
 			}
 
 			difference_type operator-(const random_access_iterator<value_type> &ref) const {
