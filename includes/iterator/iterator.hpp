@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/04 21:56:08 by lprates           #+#    #+#             */
-/*   Updated: 2022/12/23 19:45:59 by lprates          ###   ########.fr       */
+/*   Updated: 2022/12/24 18:50:57 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ namespace ft {
             }
 
             bool operator!=(const random_access_iterator &ref) const {
-                return (!(base() == ref.base()));
+                return ((base() != ref.base()));
             }
 
             bool operator<(const random_access_iterator &ref) const {
@@ -160,6 +160,16 @@ namespace ft {
 	template <typename Ite1, typename Ite2>
 	bool	operator!=(random_access_iterator<Ite1> &lhs, random_access_iterator<Ite2> &rhs) {
 		return (lhs.base() != rhs.base());
+	}
+
+	template <typename Ite1, typename Ite2>
+	bool	operator!=(const random_access_iterator<Ite1> &lhs, const random_access_iterator<Ite2> &rhs) {
+		return (lhs.base() != rhs.base());
+	}
+
+	template <typename Ite1, typename Ite2>
+	bool	operator==(random_access_iterator<Ite1> &lhs, random_access_iterator<Ite2> &rhs) {
+		return (lhs.base() == rhs.base());
 	}
 
 	template <typename Ite1, typename Ite2>
