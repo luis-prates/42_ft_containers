@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 16:52:26 by lprates           #+#    #+#             */
-/*   Updated: 2022/12/24 21:19:13 by lprates          ###   ########.fr       */
+/*   Updated: 2022/12/25 01:08:49 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,13 @@ namespace ft {
 
 			template <typename It>
 			reverse_iterator(const reverse_iterator<It>& it): _it(it.base()) {}
+			
+			template <typename It>
+			reverse_iterator& operator=(const reverse_iterator<It> &other) {
+				if (this->base() != other.base())
+					_it = other.base();
+				return (*this);
+			}
 			
 			iterator_type base() const {
 				return (_it);
@@ -77,10 +84,6 @@ namespace ft {
 				return (reverse_iterator(_it + n));
 			}
 
-			/*difference_type operator- (const reverse_iterator& rhs) const {
-				return (rhs.base() - this->base());
-			}*/
-
 			reverse_iterator& operator--() {
 				++_it;
 				return (*this);
@@ -100,13 +103,13 @@ namespace ft {
 				return (base()[-n-1]);
 			}
 
-			bool operator==(const reverse_iterator &rhs) {
+			/*bool operator==(const reverse_iterator &rhs) const {
 				return ((this->base() == rhs.base()));
 			}
 
 			bool operator!=(reverse_iterator &rhs) {
 				return (base() != rhs.base());
-			}
+			}*/
 
 		private:
 			iterator_type _it;
