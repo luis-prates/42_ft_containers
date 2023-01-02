@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/04 21:56:08 by lprates           #+#    #+#             */
-/*   Updated: 2022/12/24 21:00:22 by lprates          ###   ########.fr       */
+/*   Updated: 2022/12/26 21:33:12 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,6 +202,7 @@ namespace ft {
 		return (lhs.base() - rhs.base());
 	}
 
+	//TODO: have to put it somewhere else probably
 	template <typename Ite>
 	ptrdiff_t	itlen(Ite first, Ite last) {
 		ptrdiff_t	i = 0;

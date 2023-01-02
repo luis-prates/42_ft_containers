@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/27 02:12:07 by lprates           #+#    #+#             */
-/*   Updated: 2022/12/23 19:49:15 by lprates          ###   ########.fr       */
+/*   Updated: 2022/12/26 21:38:40 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,7 +236,7 @@ namespace ft {
 			}
 
 			template <class InputIt>
-			void assign (InputIt first, InputIt last, typename enable_if<!is_integral<InputIt>::value>::type * = 0) {
+			void assign(InputIt first, InputIt last, typename enable_if<!is_integral<InputIt>::value>::type * = 0) {
 				clear();
 				size_type idx = ft::itlen(first, last);
 				resize(idx);
@@ -266,9 +266,11 @@ namespace ft {
 
 			iterator insert(iterator position, const value_type &val) {
 				size_type idx = position - begin();
+				pointer idx_ptr;
+				
 				while (_capacity < _size + 1)
 					reserve((_capacity == 0 ? 1 : _capacity * 2));
-				pointer idx_ptr = _ptr + idx;
+				idx_ptr = _ptr + idx;
 				std::copy(idx_ptr, end().base(), idx_ptr + 1);
 				_alloc.construct(idx_ptr, val);
 				_size++;
@@ -277,9 +279,11 @@ namespace ft {
 
 			void insert(iterator position, size_type n, const value_type &val) {
 				size_type idx = position - begin();
+				pointer idx_ptr;
+				
 				if (_capacity < _size + n)
 					reserve(_size + n);
-				pointer idx_ptr = _ptr + idx;
+				idx_ptr = _ptr + idx;
 				std::copy(idx_ptr, end().base(), idx_ptr + n);
 				idx_ptr = _ptr + idx;
 				while (n--)
@@ -293,9 +297,11 @@ namespace ft {
 			void insert(iterator position, InputIt first, InputIt last, typename enable_if<!is_integral<InputIt>::value>::type * = 0) {
 				size_type n = ft::itlen(first, last);
 				size_type idx = position - begin();
+				pointer idx_ptr;
+				
 				while (_capacity < _size + n)
 					reserve((_capacity == 0 ? 1 : _capacity * 2));
-				pointer idx_ptr = _ptr + idx;
+				idx_ptr = _ptr + idx;
 				std::copy(idx_ptr, end().base(), idx_ptr + n);
 				for (size_type i = 0; first != last ; first++, i++, _size++)
 					_alloc.construct(idx_ptr + i, *first);
@@ -305,6 +311,7 @@ namespace ft {
 				size_type idx = position - begin();
 				pointer idx_ptr = _ptr + idx;
 				pointer offset_ptr = idx_ptr + 1;
+				
 				for (; offset_ptr != end().base(); (void)++idx_ptr, (void)++offset_ptr) {
 					*idx_ptr = *offset_ptr;
 				}
@@ -318,6 +325,7 @@ namespace ft {
 				size_type n = last - first;
 				pointer idx_ptr = _ptr + idx;
 				pointer offset_ptr = idx_ptr + n;
+				
 				for (; offset_ptr != end().base(); (void)++idx_ptr, (void)++offset_ptr) {
 					*idx_ptr = *offset_ptr;
 				}
