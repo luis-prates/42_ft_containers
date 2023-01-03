@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 01:32:28 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/02 21:29:02 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/02 23:27:04 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,20 +25,24 @@ namespace ft {
 		public:
 			typedef Key													key_type;
 			typedef T													mapped_type;
-			typedef ft::pair<key_type, mapped_type>						value_type;
+			typedef ft::pair<const key_type, mapped_type>				value_type;
 			typedef Compare												key_compare;
 			typedef Alloc												allocator_type;
 			typedef typename allocator_type::reference					reference;
 			typedef typename allocator_type::const_reference			const_reference;
 			typedef typename allocator_type::pointer					pointer;
 			typedef typename allocator_type::const_pointer				const_pointer;
-			typedef typename ft::Map_iterator<Key, T>					iterator;
-			typedef typename ft::Map_const_iterator<Key, T>				const_iterator;
-			typedef typename ft::Map_reverse_iterator<Key, T>			reverse_iterator;
-			typedef typename ft::Map_const_reverse_iterator<Key, T>		const_reverse_iterator;
 			
-			typedef typename ptrdiff_t							difference_type;
-			typedef typename size_t								size_type;
+			typedef ft::mapNode<value_type>								node_type;
+			typedef node_type											*node_ptr;
+			
+			typedef ft::mapIterator<value_type, node_type>				iterator;
+			typedef ft::mapIterator<const value_type, node_type>		const_iterator;
+			typedef ft::reverse_iterator<iterator>						reverse_iterator;
+			typedef ft::const_reverse_iterator<iterator>				const_reverse_iterator;
+			
+			typedef ptrdiff_t											difference_type;
+			typedef size_t												size_type;
 
 			class value_compare : std::binary_function<value_type, value_type, bool> {
 				private:
