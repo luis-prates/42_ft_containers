@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 21:41:58 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/03 00:16:41 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/05 00:47:47 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define MAP_ITERATOR_HPP
 
 # include <iostream>
+# include <cstddef>
 # include "utils/pairs.hpp"
 
 namespace ft {
@@ -26,19 +27,19 @@ namespace ft {
 			mapNode		*left;
 			mapNode		*right;
 
-			mapNode(const T &src = t()) : data(src), parent(NULL), left(NULL), right(NULL) {};
+			mapNode(const T &src = T()) : data(src), parent(NULL), left(NULL), right(NULL) {};
 	};
 
 	template<typename T>
 	mapNode<T> *farRight(mapNode<T> *node) {
-		while (node->right !=)
+		while (node->right != NULL)
 			node = node->right;
 		return (node);
 	}
 
 	template<typename T>
 	mapNode<T> *farLeft(mapNode<T> *node) {
-		while (node->left !=)
+		while (node->left != NULL)
 			node = node->left;
 		return (node);
 	}
@@ -47,19 +48,18 @@ namespace ft {
 	class mapIterator {
 		protected:
 			node_type		*_node;
-			mapIterator(node_type *src);
+			mapIterator(node_type *src) {
+				this->_node = src;
+			};
 		
 		public:
-			typedef T				value_type:
-			typedef value_type		&reference;
-			typedef value_type		*pointer;
-			typedef ptrdiff_t		difference_type;
+			typedef T											value_type;
+			typedef value_type									&reference;
+			typedef value_type									*pointer;
+			typedef ptrdiff_t									difference_type;
+			typedef typename std::bidirectional_iterator_tag	iterator_category;
 
 			mapIterator(void) : _node(NULL) {}
-			
-			mapIterator(node_type *src) {
-				this->node = src;
-			}
 			
 			mapIterator(const mapIterator &src) {
 				*this = src;
@@ -137,6 +137,14 @@ namespace ft {
 			operator mapIterator<const T, node_type>(void) const {
 				return mapIterator<const T, node_type>(this->_node);
 			}
-	}
+
+			template<class, class, class, class>
+			friend class map;
+
+			template <class, class>
+			friend class mapIterator;
+	};
 	
 } // namespace ft
+
+#endif

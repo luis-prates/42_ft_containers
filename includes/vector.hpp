@@ -6,26 +6,27 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/27 02:12:07 by lprates           #+#    #+#             */
-/*   Updated: 2022/12/26 21:38:40 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/04 23:02:47 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <memory>
-#include <algorithm>
-#include <stdexcept>
-#include <iostream>
-#include <typeinfo>
-#include <sstream>
-# include <cstddef>
-#include "iterator/iterator.hpp"
-#include "iterator/iterator_traits.hpp"
-#include "iterator/reverse_iterator.hpp"
-#include "utils/lexicographical_compare.hpp"
-#include "utils/equal.hpp"
-#include "utils/enable_if.hpp"
 
 #ifndef VECTOR_HPP
 # define VECTOR_HPP
+
+# include <memory>
+# include <algorithm>
+# include <stdexcept>
+# include <iostream>
+# include <typeinfo>
+# include <sstream>
+# include <cstddef>
+# include "iterator/iterator.hpp"
+# include "iterator/iterator_traits.hpp"
+# include "iterator/reverse_iterator.hpp"
+# include "utils/lexicographical_compare.hpp"
+# include "utils/equal.hpp"
+# include "utils/enable_if.hpp"
 
 namespace ft {
 	template< class T, class Allocator = std::allocator<T> >
