@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/04 19:37:49 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/04 23:26:09 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/06 20:40:36 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 //# include "stack.hpp"
 #  include "vector.hpp"
 #  include "map.hpp"
+#  include "stack.hpp"
 #  include "iterator/iterator.hpp"
 #  include "utils/pairs.hpp"
 # else // using std library

@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 23:19:53 by lprates           #+#    #+#             */
-/*   Updated: 2022/12/20 01:37:39 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/06 20:26:39 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #define PAIRS_HPP
 
 namespace ft {
-	template <typename T1, typename T2>
+	template <class T1, class T2>
 	struct pair {
 		public:
 			typedef T1	first_type;
@@ -24,7 +24,7 @@ namespace ft {
 			
 			pair(const first_type &x, const second_type &y): first(x), second(y) {}
 
-			template<typename U, typename V>
+			template <class U, class V>
 			pair(const pair<U, V> &p): first(p.first), second(p.second) {}
 
 			pair& operator=(const pair &other) {
@@ -73,7 +73,7 @@ namespace ft {
 		return !(lhs < rhs);
 	}
 
-	template<typename T1, typename T2>
+	template <class T1, class T2>
 	pair<T1, T2> make_pair(T1 x, T2 y) {
 		return (pair<T1, T2>(x, y));
 	}

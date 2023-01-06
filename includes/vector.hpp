@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/27 02:12:07 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/04 23:02:47 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/06 20:23:02 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ namespace ft {
 					_alloc.construct(_ptr + i, value);
 				
 			};
+			
 			// Constructs the container with the contents of the range [first, last).
 			// This constructor has the same effect as vector(static_cast<size_type>(first), static_cast<value_type>(last), a) if InputIt is an integral type.
 			template< class InputIt >
@@ -316,7 +317,6 @@ namespace ft {
 				for (; offset_ptr != end().base(); (void)++idx_ptr, (void)++offset_ptr) {
 					*idx_ptr = *offset_ptr;
 				}
-				//std::copy(idx_ptr + 1, end(), idx_ptr);
 				pop_back();
 				return (position);
 			}

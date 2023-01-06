@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 21:41:20 by lprates           #+#    #+#             */
-/*   Updated: 2022/12/21 22:48:02 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/06 20:26:58 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ namespace ft {
       typedef _Reference	reference;
     };*/
 
-	template <typename Iterator>
+	template <class Iterator>
 	class iterator_traits {
 		public:
 			typedef typename Iterator::value_type			value_type;
@@ -44,7 +44,7 @@ namespace ft {
 			typedef typename Iterator::iterator_category	iterator_category;
 	};
 
-	template <typename T>
+	template <class T>
 	class iterator_traits<T*> {
 		public:
 			typedef T								value_type;
@@ -54,7 +54,7 @@ namespace ft {
 			typedef ft::random_access_iterator_tag	iterator_category;
 	};
 
-	template <typename T>
+	template <class T>
 	class iterator_traits<const T*> {
 		public:
 			typedef T								value_type;

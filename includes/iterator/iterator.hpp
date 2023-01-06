@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/04 21:56:08 by lprates           #+#    #+#             */
-/*   Updated: 2022/12/26 21:33:12 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/06 20:37:56 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ struct random_access_iterator_tag;
 
 namespace ft {
 
-	template <typename Category, typename T, typename Distance = ptrdiff_t,
-          typename Pointer = T *, typename Reference = T &>
+	template <class Category, class T, class Distance = ptrdiff_t,
+          class Pointer = T *, class Reference = T &>
 	struct iterator {
 		typedef T value_type;
 		typedef Distance difference_type;
@@ -30,7 +30,7 @@ namespace ft {
 		typedef Category iterator_category;
 	};
 	
-	template <typename T>
+	template <class T>
 	class random_access_iterator : public ft::iterator< random_access_iterator_tag, T > {
 		public:
 			typedef typename ft::iterator< ft::random_access_iterator_tag, T >::value_type			value_type;
@@ -152,58 +152,52 @@ namespace ft {
 			pointer _ptr;
 	};
 
-	/*template <typename It>
-	typename random_access_iterator<It>::difference_type operator-(const random_access_iterator<It>& lhs, const random_access_iterator<It>& rhs) {
-		return (lhs.base() - rhs.base());
-	}*/
-
-	template <typename Ite1, typename Ite2>
+	template <class Ite1, class Ite2>
 	bool	operator!=(random_access_iterator<Ite1> &lhs, random_access_iterator<Ite2> &rhs) {
 		return (lhs.base() != rhs.base());
 	}
 
-	template <typename Ite1, typename Ite2>
+	template <class Ite1, class Ite2>
 	bool	operator!=(const random_access_iterator<Ite1> &lhs, const random_access_iterator<Ite2> &rhs) {
 		return (lhs.base() != rhs.base());
 	}
 
-	template <typename Ite1, typename Ite2>
+	template <class Ite1, class Ite2>
 	bool	operator==(random_access_iterator<Ite1> &lhs, random_access_iterator<Ite2> &rhs) {
 		return (lhs.base() == rhs.base());
 	}
 
-	template <typename Ite1, typename Ite2>
+	template <class Ite1, class Ite2>
 	bool	operator==(const random_access_iterator<Ite1> &lhs, const random_access_iterator<Ite2> &rhs) {
 		return (lhs.base() == rhs.base());
 	}
 
-	template <typename Ite1, typename Ite2>
+	template <class Ite1, class Ite2>
 	bool	operator<(const random_access_iterator<Ite1> &lhs, const random_access_iterator<Ite2> &rhs) {
 		return (lhs.base() < rhs.base());
 	}
 
-	template <typename Ite1, typename Ite2>
+	template <class Ite1, class Ite2>
 	bool	operator<=(const random_access_iterator<Ite1> &lhs, const random_access_iterator<Ite2> &rhs) {
 		return (lhs.base() <= rhs.base());
 	}
 	
-	template <typename Ite1, typename Ite2>
+	template <class Ite1, class Ite2>
 	bool	operator>(const random_access_iterator<Ite1> &lhs, const random_access_iterator<Ite2> &rhs) {
 		return (lhs.base() > rhs.base());
 	}
 
-	template <typename Ite1, typename Ite2>
+	template <class Ite1, class Ite2>
 	bool	operator>=(const random_access_iterator<Ite1> &lhs, const random_access_iterator<Ite2> &rhs) {
 		return (lhs.base() >= rhs.base());
 	}
 
-	template <typename Ite1, typename Ite2>
+	template <class Ite1, class Ite2>
 	ptrdiff_t operator-(const random_access_iterator<Ite1> &lhs, const random_access_iterator<Ite2> &rhs) {
 		return (lhs.base() - rhs.base());
 	}
 
-	//TODO: have to put it somewhere else probably
-	template <typename Ite>
+	template <class Ite>
 	ptrdiff_t	itlen(Ite first, Ite last) {
 		ptrdiff_t	i = 0;
 

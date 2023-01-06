@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 21:41:58 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/05 00:47:47 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/06 20:25:27 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 namespace ft {
 
-	template<typename T>
+	template <class T>
 	struct mapNode {
 		public:
 			T			data;
@@ -30,21 +30,21 @@ namespace ft {
 			mapNode(const T &src = T()) : data(src), parent(NULL), left(NULL), right(NULL) {};
 	};
 
-	template<typename T>
+	template <class T>
 	mapNode<T> *farRight(mapNode<T> *node) {
 		while (node->right != NULL)
 			node = node->right;
 		return (node);
 	}
 
-	template<typename T>
+	template <class T>
 	mapNode<T> *farLeft(mapNode<T> *node) {
 		while (node->left != NULL)
 			node = node->left;
 		return (node);
 	}
 
-	template<class T, class node_type>
+	template <class T, class node_type>
 	class mapIterator {
 		protected:
 			node_type		*_node;
@@ -74,12 +74,12 @@ namespace ft {
 				return (*this);
 			}
 
-			template<class U>
+			template <class U>
 			bool operator==(const mapIterator<U, node_type> &rhs) const {
 				return (this->_node == rhs._node);
 			}
 			
-			template<class U>
+			template <class U>
 			bool operator!=(const mapIterator<U, node_type> &rhs) const {
 				return (this->_node != rhs._node);
 			}
@@ -138,7 +138,7 @@ namespace ft {
 				return mapIterator<const T, node_type>(this->_node);
 			}
 
-			template<class, class, class, class>
+			template <class, class, class, class>
 			friend class map;
 
 			template <class, class>
