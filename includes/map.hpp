@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 01:32:28 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/06 20:24:35 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/07 18:11:11 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # include <sstream>
 # include "utils/pairs.hpp"
 # include "utils/map_iterator.hpp"
+//# include "utils/avl_iterator.hpp"
+//# include "utils/avl_tree.hpp"
 # include "iterator/reverse_iterator.hpp"
 # include "utils/equal.hpp"
 # include "utils/lexicographical_compare.hpp"
@@ -66,7 +68,7 @@ namespace ft {
 			};
 
 			explicit map(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
-				: _data(), _key_cmp(comp), _alloc(alloc), _size(0) {
+				: root(NULL), _data(), _key_cmp(comp), _alloc(alloc), _size(0), _rightmost(NULL)  {
 					this->_data = new node_type;
 			}
 
@@ -76,19 +78,19 @@ namespace ft {
 				Ite last,
 				const key_compare &comp = key_compare(),
 				const allocator_type &alloc = allocator_type()
-				) : _data(), _key_cmp(comp), _alloc(alloc), _size(0) {
+				) : root(NULL), _data(), _key_cmp(comp), _alloc(alloc), _size(0), _rightmost(NULL) {
 					this->_data = new node_type;
 					this->_create_data_it(first, last);
 			}
 
-			map(const map &src) : _data(), _key_cmp(key_compare()), _alloc(allocator_type()), _size(0) {
+			map(const map &src) : root(NULL), _data(), _key_cmp(key_compare()), _alloc(allocator_type()), _size(0), _rightmost(NULL) {
 				this->_data = new node_type;
 				*this = src;
 			}
 
 			virtual ~map(void) {
 				this->clear();
-				delete this->_data;
+				//delete this->_data;
 			}
 
 			map	&operator=(map const &rhs) {
@@ -96,7 +98,22 @@ namespace ft {
 					return (*this);
 				this->clear();
 				this->_create_data_it(rhs.begin(), rhs.end());
+				//this->_rightmost = NULL;
+				//this->_t
 				return (*this);
+			}
+
+			mapped_type& at(const key_type& key) {
+				iterator it = this->find(key);
+				if (it == this->end())
+					throw std::out_of_range("map::at:  key not found");
+				return it->second;
+			}
+			const mapped_type& at(const key_type& key) const {
+				const_iterator it = this->find(key);
+				if (this->end() == it )
+					throw std::out_of_range("map::at:  key not found");
+				return it->second;
 			}
 
 			// Iterators
@@ -155,7 +172,7 @@ namespace ft {
 
 			// Modifiers
 
-			ft::pair<iterator, bool>	insert(const value_type &val) {
+			/*ft::pair<iterator, bool>	insert(const value_type &val) {
 				ft::pair<iterator, bool> res;
 
 				res.second = !this->count(val.first);
@@ -163,6 +180,50 @@ namespace ft {
 					this->_btree_add(new node_type(val));
 				res.first = this->find(val.first);
 				return (res);
+			}*/
+
+			ft::pair<iterator, bool> insert(const value_type &val)
+			{
+				mapNode<value_type> *current = this->root;
+				mapNode<value_type> *parent = NULL;
+
+				while (current != NULL)
+				{
+					parent = current;
+					if (_key_cmp(val.first, current->data.first))
+					{
+						current = current->left;
+					}
+					else if (_key_cmp(current->data.first, val.first))
+					{
+						current = current->right;
+					}
+					else
+					{
+						return ft::make_pair(iterator(current), false);
+					}
+				}
+
+				current = new mapNode<value_type>(val);
+				current->parent = parent;
+
+				if (parent == NULL)
+				{
+					this->root = current;
+				}
+				else if (_key_cmp(val.first, parent->data.first))
+				{
+					parent->left = current;
+				}
+				else
+				{
+					parent->right = current;
+				}
+
+				this->_rebalance(current);
+				++this->_size;
+
+				return ft::make_pair(iterator(current), true);
 			}
 
 			iterator	insert(iterator position, const value_type &val) {
@@ -180,13 +241,68 @@ namespace ft {
 				this->erase(position++, position);
 			}
 
-			size_type	erase(const key_type &k) {
+			/*size_type	erase(const key_type &k) {
 				iterator	element = this->find(k);
 
 				if (element == this->end())
 					return (0);
 				this->_btree_rm(element._node);
 				return (1);
+			}*/
+
+			size_type erase(const key_type &k)
+			{
+				iterator it = this->find(k);
+				if (it == this->end())
+				{
+					return 0;
+				}
+
+				node_ptr nodeToErase = it._node;
+				node_ptr replacementNode = NULL;
+				node_ptr parentNode = nodeToErase->parent;
+				bool isLeftChild = (parentNode != NULL && parentNode->left == nodeToErase);
+
+				if (nodeToErase->left == NULL || nodeToErase->right == NULL)
+				{
+					replacementNode = (nodeToErase->left == NULL) ? nodeToErase->right : nodeToErase->left;
+				}
+				else
+				{
+					node_ptr rightmostNode = nodeToErase->left;
+					while (rightmostNode->right != NULL)
+					{
+						rightmostNode = rightmostNode->right;
+					}
+
+					replacementNode = rightmostNode->left;
+					rightmostNode->data = nodeToErase->data;
+					nodeToErase = rightmostNode;
+				}
+
+				if (replacementNode != NULL)
+				{
+					replacementNode->parent = parentNode;
+				}
+
+				if (parentNode == NULL)
+				{
+					this->root = replacementNode;
+				}
+				else if (isLeftChild)
+				{
+					parentNode->left = replacementNode;
+				}
+				else
+				{
+					parentNode->right = replacementNode;
+				}
+
+				this->_rebalance(parentNode);
+				delete nodeToErase;
+				--this->_size;
+
+				return 1;
 			}
 
 			void	erase(iterator first, iterator last) {
@@ -202,14 +318,56 @@ namespace ft {
 				this->_cpy_content(tmp);
 			}
 
-			void	clear(void) {
+			/*void	clear(void) {
 				node_ptr	ghost = this->end()._node;
 
 				if (this->_size == 0)
 					return ;
-				ghost->parent->right = NULL;
+				//ghost->parent->right = NULL;
 				this->_btree_clear(this->_data);
 				this->_data = ghost;
+				this->_size = 0;
+				this->_rightmost = NULL;
+			}*/
+
+			void clear(void)
+			{
+				node_ptr node = this->root;
+				node_ptr parent = NULL;
+				node_ptr rightChild = NULL;
+
+				while (node != NULL)
+				{
+					if (node->left == NULL)
+					{
+						rightChild = node->right;
+						delete node;
+						node = rightChild;
+					}
+					else
+					{
+						parent = node->left;
+						while (parent->right != NULL && parent->right != node)
+						{
+							parent = parent->right;
+						}
+
+						if (parent->right == NULL)
+						{
+							parent->right = node;
+							node = node->left;
+						}
+						else
+						{
+							parent->right = NULL;
+							rightChild = node->right;
+							delete node;
+							node = rightChild;
+						}
+					}
+				}
+
+				this->root = NULL;
 				this->_size = 0;
 			}
 
@@ -249,18 +407,21 @@ namespace ft {
 				return (it);
 			}
 
-			size_type	count(const key_type &k) const {
-				const_iterator	it = this->begin();
-				const_iterator	ite = this->end();
-				size_type		res = 0;
-
-				while (it != ite) {
-					if (this->_key_eq((it++)->first, k)) {
+			size_type count(const key_type &k) const {
+				size_type res = 0;
+				const_iterator left = this->begin(), right = this->end();
+				while (left <= right) {
+					iterator mid = left + (right - left) / 2;
+					if (this->_key_eq(mid->first, k)) {
 						res++;
-						break ;
+						break;
+					} else if (k < mid->first) {
+						right = mid - 1;
+					} else {
+						left = mid + 1;
 					}
 				}
-				return (res);
+				return res;
 			}
 
 			iterator	lower_bound(const key_type &k) {
@@ -326,6 +487,9 @@ namespace ft {
 				res.second = this->upper_bound(k);
 				return (res);
 			}
+
+			protected:
+				mapNode<value_type>		*root;
 			
 			private:
 				typedef ft::mapNode<value_type>		node_type;
@@ -336,6 +500,7 @@ namespace ft {
 				allocator_type						_alloc;
 				size_type							_size;
 				const static size_type 				_max_size;
+				node_ptr							_rightmost;
 
 				template <class Ite>
 				void	_create_data_it(Ite first, Ite last) {
@@ -389,12 +554,14 @@ namespace ft {
 					if (*node == NULL) {
 						newNode->parent = (*parent);
 						*node = newNode;
+						if (!sideLeft)
+							this->_rightmost = newNode;
 					}
 					else {
 						*node = newNode;
 						newNode->parent = ghost->parent;
 						ghost->parent = farRight(newNode);
-						farRight(newNode)->right = ghost;
+						ghost->parent->right = ghost;
 					}
 				}
 
@@ -414,6 +581,7 @@ namespace ft {
 					this->_key_cmp = src._key_cmp;
 					this->_alloc = src._alloc;
 					this->_size = src._size;
+					this->_rightmost = src._rightmost;
 					src._data = tmp;
 					src._size = 0;
 					tmp = NULL;
@@ -422,6 +590,41 @@ namespace ft {
 				bool	_key_eq(const key_type &k1, const key_type &k2) const {
 					return (!this->_key_cmp(k1, k2) && !this->_key_cmp(k2, k1));
 				}
+
+				void _rebalance(mapNode<value_type> *node)
+				{
+					while (node != NULL)
+					{
+						int balance = balanceFactor(node);
+
+						if (balance > 1)
+						{
+							if (balanceFactor(node->left) < 0)
+							{
+								node = rotateLeftRight(node);
+							}
+							else
+							{
+								node = rotateRight(node);
+							}
+						}
+						else if (balance < -1)
+						{
+							if (balanceFactor(node->right) > 0)
+							{
+								node = rotateRightLeft(node);
+							}
+							else
+							{
+								node = rotateLeft(node);
+							}
+						}
+
+						node->height = std::max(height(node->left), height(node->right)) + 1;
+						node = node->parent;
+					}
+				}
+
 
 	};
 

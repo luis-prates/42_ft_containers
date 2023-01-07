@@ -1,6 +1,6 @@
 clear_terminal := clear
 CXX = c++
-CXXFLAGS := -std=c++98 -Wall -Wextra -Werror
+CXXFLAGS := -std=c++98 -Wall -Wextra -Werror -g -fsanitize=address
 FT = 0
 FTFLAGS := "-D=FT $(FT)"
 library_option := -l
@@ -38,11 +38,11 @@ $(NAME_FT): $(OBJS_FT)
 
 %.std.o: %.cpp
 	$(eval FT=0)
-	$(CXX) $(CXXFLAGS) $(FTFLAGS) $(INC) -c $< -o $@
+	$(CXX) $(CXXFLAGS) "-D=FT 0" $(INC) -c $< -o $@
 
 %.ft.o: %.cpp
 	$(eval FT=1)
-	$(CXX) $(CXXFLAGS) $(INC) -c $< -o $@
+	$(CXX) $(CXXFLAGS) "-D=FT 1" $(INC) -c $< -o $@
 
 clean:
 	@${remove_file} ${remove_file_option} ${OBJS_FT}

@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/27 02:12:07 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/06 20:23:02 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/07 02:58:11 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ namespace ft {
 			{
 				if (count > max_size())
 					throw std::length_error("Argument size cannot be larger than max size!");
+				//std::cout << "Constructing vector :)\n";
 				_ptr = _alloc.allocate(count);
 				for (size_type i = 0; i < count; i++)
 					_alloc.construct(_ptr + i, value);

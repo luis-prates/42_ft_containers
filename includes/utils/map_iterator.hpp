@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 21:41:58 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/06 20:25:27 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/07 17:41:52 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,22 +26,99 @@ namespace ft {
 			mapNode		*parent;
 			mapNode		*left;
 			mapNode		*right;
+			int			height;
 
-			mapNode(const T &src = T()) : data(src), parent(NULL), left(NULL), right(NULL) {};
+			mapNode(const T &src = T()) : data(src), parent(NULL), left(NULL), right(NULL), height(1) {};
+
+			mapNode(const mapNode<T> &src)
+			{
+				this->data = src.data;
+				this->parent = src.parent;
+				this->left = src.left;
+				this->right = src.right;
+				this->height = src.height;
+			}
+
+			mapNode<T> &operator=(const mapNode<T> &rhs)
+			{
+				if (this != &rhs)
+				{
+					this->data = rhs.data;
+					this->parent = rhs.parent;
+					this->left = rhs.left;
+					this->right = rhs.right;
+					this->height = rhs.height;
+				}
+
+				return *this;
+			}
+
 	};
 
 	template <class T>
 	mapNode<T> *farRight(mapNode<T> *node) {
-		while (node->right != NULL)
+		while (node->right != NULL) {
+			node->height = std::max(height(node->left), height(node->right)) + 1;
 			node = node->right;
+		}
+		node->height = std::max(height(node->left), height(node->right)) + 1;
 		return (node);
 	}
 
 	template <class T>
+		int height(mapNode<T> *node) {
+		if (node == NULL) {
+			return 0;
+		} else {
+			return node->height;
+		}
+	}
+
+	template <class T>
+	int balanceFactor(mapNode<T> *node) {
+		return height(node->left) - height(node->right);
+	}
+
+	template <class T>
 	mapNode<T> *farLeft(mapNode<T> *node) {
-		while (node->left != NULL)
+		while (node->left != NULL) {
+			node->height = std::max(height(node->left), height(node->right)) + 1;
 			node = node->left;
+		}
+		node->height = std::max(height(node->left), height(node->right)) + 1;
 		return (node);
+	}
+
+	template <class T>
+	mapNode<T> *rotateRight(mapNode<T> *node) {
+		mapNode<T> *newRoot = node->left;
+		node->left = newRoot->right;
+		newRoot->right = node;
+		node->height = std::max(height(node->left), height(node->right)) + 1;
+		newRoot->height = std::max(height(newRoot->left), height(newRoot->right)) + 1;
+		return newRoot;
+	}
+
+	template <class T>
+	mapNode<T> *rotateLeft(mapNode<T> *node) {
+		mapNode<T> *newRoot = node->right;
+		node->right = newRoot->left;
+		newRoot->left = node;
+		node->height = std::max(height(node->left), height(node->right)) + 1;
+		newRoot->height = std::max(height(newRoot->left), height(newRoot->right)) + 1;
+		return newRoot;
+	}
+
+	template <class T>
+	mapNode<T> *rotateLeftRight(mapNode<T> *node) {
+	node->left = rotateLeft(node->left);
+	return rotateRight(node);
+	}
+
+	template <class T>
+	mapNode<T> *rotateRightLeft(mapNode<T> *node) {
+	node->right = rotateRight(node->right);
+	return rotateLeft(node);
 	}
 
 	template <class T, class node_type>
