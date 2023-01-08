@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 22:05:17 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/07 12:02:09 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/08 18:29:44 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,10 +103,11 @@ int main(int argc, char** argv) {
 		//NORMAL ! :P
 	}
 	
-	for (int i = 0; i < 10000; ++i)
+	for (int i = 0; i < 10; ++i)
 	{
-		std::cout << "inserting: " << i << std::endl; 
-		map_int.insert(ft::make_pair(rand(), rand()));
+		//int rng1 = rand(), rng2 = rand();
+		std::cout << "inserting " << i << " with key pair: " << i << " : " << i << std::endl; 
+		map_int.insert(ft::make_pair(i, i));
 	}
 
 	//int sum = 0;
@@ -120,13 +121,13 @@ int main(int argc, char** argv) {
 	/*{
 		ft::map<int, int> copy = map_int;
 	}*/
-	MutantStack<char> iterable_stack;
+	/*MutantStack<char> iterable_stack;
 	for (char letter = 'a'; letter <= 'z'; letter++)
 		iterable_stack.push(letter);
 	for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end(); it++)
 	{
 		std::cout << *it;
-	}
+	}*/
 	std::cout << std::endl;
 	return (0);
 }

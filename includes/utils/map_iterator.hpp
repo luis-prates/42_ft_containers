@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 21:41:58 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/07 17:41:52 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/08 19:25:59 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,14 @@ namespace ft {
 		newRoot->right = node;
 		node->height = std::max(height(node->left), height(node->right)) + 1;
 		newRoot->height = std::max(height(newRoot->left), height(newRoot->right)) + 1;
+		if (node->parent == NULL) {
+			newRoot->parent = NULL;
+		}
+		else {
+			newRoot->parent = node->parent;
+			newRoot->parent->left = newRoot;
+		}
+		node->parent = newRoot;
 		return newRoot;
 	}
 
@@ -106,19 +114,27 @@ namespace ft {
 		newRoot->left = node;
 		node->height = std::max(height(node->left), height(node->right)) + 1;
 		newRoot->height = std::max(height(newRoot->left), height(newRoot->right)) + 1;
+		if (node->parent == NULL) {
+			newRoot->parent = NULL;
+		}
+		else {
+			newRoot->parent = node->parent;
+			newRoot->parent->right = newRoot;
+		}
+		node->parent = newRoot;
 		return newRoot;
 	}
 
 	template <class T>
 	mapNode<T> *rotateLeftRight(mapNode<T> *node) {
-	node->left = rotateLeft(node->left);
-	return rotateRight(node);
+		node->left = rotateLeft(node->left);
+		return rotateRight(node);
 	}
 
 	template <class T>
 	mapNode<T> *rotateRightLeft(mapNode<T> *node) {
-	node->right = rotateRight(node->right);
-	return rotateLeft(node);
+		node->right = rotateRight(node->right);
+		return rotateLeft(node);
 	}
 
 	template <class T, class node_type>
