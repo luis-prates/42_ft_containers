@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 22:05:17 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/08 18:29:44 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/11 22:37:32 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,14 @@
 	#include <map>
 	#include <stack>
 	#include <vector>
+	#include <list>
 	namespace ft = std;
 #else
 	#include <map.hpp>
 	#include <stack.hpp>
 	#include <vector.hpp>
+	#include <list>
+
 #endif
 
 #include <stdlib.h>
@@ -36,9 +39,58 @@ struct Buffer
 	char buff[BUFFER_SIZE];
 };
 
+// copy construct
+//#define T1 int
+//#define T2 int
+
+// erase
+#define T1 int
+#define T2 std::string
+typedef ft::pair<const T1, T2> T3;
 
 #define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
+template <typename T>
+std::string	printPair(const T &iterator, bool nl = true, std::ostream &o = std::cout)
+{
+	o << "key: " << iterator->first << " | value: " << iterator->second;
+	if (nl)
+		o << std::endl;
+	return ("");
+}
+
+template <typename T_MAP>
+void	printSize(T_MAP const &mp, bool print_content = 1)
+{
+	std::cout << "size: " << mp.size() << std::endl;
+	std::cout << "max_size: " << mp.max_size() << std::endl;
+	if (print_content)
+	{
+		typename T_MAP::const_iterator it = mp.begin(), ite = mp.end();
+		std::cout << std::endl << "Content is:" << std::endl;
+		for (; it != ite; ++it)
+			std::cout << "- " << printPair(it, false) << std::endl;
+	}
+	std::cout << "###############################################" << std::endl;
+}
+
+static int iter = 0;
+
+template <typename MAP, typename U>
+void	ft_erase(MAP &mp, U param)
+{
+	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+	mp.erase(param);
+	printSize(mp);
+}
+
+template <typename MAP, typename U, typename V>
+void	ft_erase(MAP &mp, U param, V param2)
+{
+	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+	mp.erase(param, param2);
+	printSize(mp);
+}
 template<typename T>
 class MutantStack : public ft::stack<T>
 {
@@ -103,12 +155,85 @@ int main(int argc, char** argv) {
 		//NORMAL ! :P
 	}
 	
-	for (int i = 0; i < 10; ++i)
+	/*for (int i = 0; i < 20; ++i)
 	{
 		//int rng1 = rand(), rng2 = rand();
 		std::cout << "inserting " << i << " with key pair: " << i << " : " << i << std::endl; 
 		map_int.insert(ft::make_pair(i, i));
-	}
+	}*/
+
+	//! for comp and bounds test
+	/*typedef ft::map<int, int>::value_type T3;
+	std::list<T3> lst;
+	unsigned int lst_size = 10;
+	for (unsigned int i = 0; i < lst_size; ++i)
+		lst.push_back(T3(i + 1, (i + 1) * 3));
+	ft::map<int, int> mp(lst.begin(), lst.end());
+
+	printSize(mp);
+
+	std::cout << "begin key: " << mp.begin()->first << " end key: " << mp.end()->first << std::endl;*/
+	//copy_constructor
+	/*
+	typedef ft::pair<const int, int> T3;
+	std::list<T3> lst;
+	unsigned int lst_size = 7;
+	for (unsigned int i = 0; i < lst_size; ++i)
+		lst.push_back(T3(lst_size - i, i));
+
+	std::cout << "start\n";
+	ft::map<T1, T2> mp(lst.begin(), lst.end());
+	std::cout << "checkpoint 1\n";
+	printSize(mp);
+	ft::map<T1, T2>::iterator it = mp.begin(), ite = mp.end();
+	std::cout << "checkpoint 2\n";
+	ft::map<T1, T2> mp_range(it, --(--ite));
+	std::cout << "checkpoint 3\n";
+	//printSize(mp_range);
+	for (int i = 0; it != ite; ++it)
+		it->second = ++i * 5;
+	std::cout << "checkpoint 4\n";
+
+	it = mp.begin(); ite = --(--mp.end());
+	std::cout << "checkpoint 5\n";
+	ft::map<T1, T2> mp_copy(mp);
+	std::cout << "checkpoint 6\n";
+	for (int i = 0; it != ite; ++it)
+		it->second = ++i * 7;
+	std::cout << "checkpoint 7\n";
+	std::cout << "\t-- PART ONE --" << std::endl;
+	printSize(mp);
+	printSize(mp_range);
+	printSize(mp_copy);
+
+	mp = mp_copy;
+	mp_copy = mp_range;
+	mp_range.clear();
+
+	std::cout << "\t-- PART TWO --" << std::endl;
+	printSize(mp);
+	printSize(mp_range);
+	printSize(mp_copy);
+	return (0);
+	*/
+
+	//erase
+	std::list<T3> lst;
+	unsigned int lst_size = 10;
+	std::cout << "checkpoint -1\n";
+	for (unsigned int i = 0; i < lst_size; ++i)
+		lst.push_back(T3(i, std::string((lst_size - i), i + 65)));
+	std::cout << "checkpoint 0\n";
+	ft::map<T1, T2> mp(lst.begin(), lst.end());
+	printSize(mp);
+
+	std::cout << "checkpoint 1\n";
+
+	ft_erase(mp, ++mp.begin());
+	std::cout << "checkpoint 2\n";
+
+	ft_erase(mp, mp.begin());
+	std::cout << "checkpoint 3\n";
 
 	//int sum = 0;
 	/*for (int i = 0; i < 10000; i++)

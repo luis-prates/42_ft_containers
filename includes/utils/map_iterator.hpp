@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 21:41:58 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/08 19:25:59 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/11 21:59:50 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ namespace ft {
 
 	template <class T>
 	mapNode<T> *farRight(mapNode<T> *node) {
+		if (!node)
+			return (NULL);
 		while (node->right != NULL) {
 			node->height = std::max(height(node->left), height(node->right)) + 1;
 			node = node->right;
@@ -65,6 +67,30 @@ namespace ft {
 		return (node);
 	}
 
+	/*template <class T>
+	mapNode<T> *farRight(mapNode<T> *node) {
+		if (node->right == NULL) return node;
+			return farRight(node->right);
+	}*/
+
+	template <class T>
+	mapNode<T> *farLeft(mapNode<T> *node) {
+		if (!node)
+			return NULL;
+		while (node->left != NULL) {
+			node->height = std::max(height(node->left), height(node->right)) + 1;
+			node = node->left;
+		}
+		node->height = std::max(height(node->left), height(node->right)) + 1;
+		return (node);
+	}
+
+	/*template <class T>
+	mapNode<T> *farLeft(mapNode<T> *node) {
+		if (node->left == NULL) return node;
+			return farLeft(node->left);
+	}*/
+	
 	template <class T>
 		int height(mapNode<T> *node) {
 		if (node == NULL) {
@@ -77,16 +103,6 @@ namespace ft {
 	template <class T>
 	int balanceFactor(mapNode<T> *node) {
 		return height(node->left) - height(node->right);
-	}
-
-	template <class T>
-	mapNode<T> *farLeft(mapNode<T> *node) {
-		while (node->left != NULL) {
-			node->height = std::max(height(node->left), height(node->right)) + 1;
-			node = node->left;
-		}
-		node->height = std::max(height(node->left), height(node->right)) + 1;
-		return (node);
 	}
 
 	template <class T>
@@ -104,6 +120,8 @@ namespace ft {
 			newRoot->parent->left = newRoot;
 		}
 		node->parent = newRoot;
+		if (node->left)
+			node->left->parent = node;
 		return newRoot;
 	}
 
@@ -122,6 +140,8 @@ namespace ft {
 			newRoot->parent->right = newRoot;
 		}
 		node->parent = newRoot;
+		if (node->right)
+			node->right->parent = node;
 		return newRoot;
 	}
 

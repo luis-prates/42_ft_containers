@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 01:32:28 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/08 19:27:10 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/11 22:56:53 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,8 @@ namespace ft {
 			};
 
 			explicit map(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
-				: root(NULL), _data(), _key_cmp(comp), _alloc(alloc), _size(0), _rightmost(NULL)  {
-					this->_data = new node_type;
+				: _data(), _key_cmp(comp), _alloc(alloc), _size(0)  {
+					//this->_data = new node_type;
 			}
 
 			template <class Ite>
@@ -78,13 +78,12 @@ namespace ft {
 				Ite last,
 				const key_compare &comp = key_compare(),
 				const allocator_type &alloc = allocator_type()
-				) : root(NULL), _data(), _key_cmp(comp), _alloc(alloc), _size(0), _rightmost(NULL) {
-					this->_data = new node_type;
+				) : _data(), _key_cmp(comp), _alloc(alloc), _size(0) {
 					this->_create_data_it(first, last);
 			}
 
-			map(const map &src) : root(NULL), _data(), _key_cmp(key_compare()), _alloc(allocator_type()), _size(0), _rightmost(NULL) {
-				this->_data = new node_type;
+			map(const map &src) : _data(), _key_cmp(key_compare()), _alloc(allocator_type()), _size(0) {
+				//this->_data = new node_type;
 				*this = src;
 			}
 
@@ -172,10 +171,37 @@ namespace ft {
 
 			// Modifiers
 
+			void removePlaceholderNodes(mapNode<value_type> *node)
+			{
+				if (node == NULL)
+				{
+					return;
+				}
+				removePlaceholderNodes(node->left);
+				removePlaceholderNodes(node->right);
+
+				if (node->data.first == value_type().first && node->data.second == value_type().second)
+				{
+					if (node->parent != NULL)
+					{
+						if (node->parent->left == node)
+						{
+							node->parent->left = NULL;
+						}
+						else
+						{
+							node->parent->right = NULL;
+						}
+					}
+					delete node;
+				}
+			}
+
 			ft::pair<iterator, bool> insert(const value_type &val)
 			{
-				mapNode<value_type> *current = this->root;
+				mapNode<value_type> *current = this->_data;
 				mapNode<value_type> *parent = NULL;
+				removePlaceholderNodes(this->_data);
 
 				while (current != NULL)
 				{
@@ -199,7 +225,7 @@ namespace ft {
 
 				if (parent == NULL)
 				{
-					this->root = current;
+					this->_data = current;
 				}
 				else if (_key_cmp(val.first, parent->data.first))
 				{
@@ -212,6 +238,13 @@ namespace ft {
 
 				this->_rebalance(current);
 				++this->_size;
+				mapNode<value_type> *leaf = this->_data;
+				while (leaf->right != NULL) {
+					leaf = leaf->right;
+				}
+
+				leaf->right = new mapNode<value_type>(value_type());
+				leaf->right->parent = leaf;
 
 				return ft::make_pair(iterator(current), true);
 			}
@@ -223,12 +256,14 @@ namespace ft {
 
 			template <class Ite>
 			void	insert(Ite first, Ite last) {
-				while (first != last)
+				while (first != last) 
 					this->insert(*first++);
 			}
 
 			void	erase(iterator position) {
-				this->erase(position++, position);
+				iterator tmp = position;
+				tmp++;
+				this->erase(position++, tmp);
 			}
 
 			size_type erase(const key_type &k)
@@ -268,7 +303,7 @@ namespace ft {
 
 				if (parentNode == NULL)
 				{
-					this->root = replacementNode;
+					this->_data = replacementNode;
 				}
 				else if (isLeftChild)
 				{
@@ -301,8 +336,8 @@ namespace ft {
 
 			void clear(void)
 			{
-				_tree_clear(this->root);
-				this->root = NULL;
+				_tree_clear(this->_data);
+				this->_data = NULL;
 				this->_size = 0;
 			}
 
@@ -423,8 +458,8 @@ namespace ft {
 				return (res);
 			}
 
-			protected:
-				mapNode<value_type>		*root;
+			/*protected:
+				mapNode<value_type>		*root;*/
 			
 			private:
 				typedef ft::mapNode<value_type>		node_type;
@@ -435,7 +470,6 @@ namespace ft {
 				allocator_type						_alloc;
 				size_type							_size;
 				const static size_type 				_max_size;
-				node_ptr							_rightmost;
 
 				template <class Ite>
 				void	_create_data_it(Ite first, Ite last) {
@@ -450,8 +484,6 @@ namespace ft {
 					this->_key_cmp = src._key_cmp;
 					this->_alloc = src._alloc;
 					this->_size = src._size;
-					this->_rightmost = src._rightmost;
-					this->root = src.root;
 					src._data = tmp;
 					src._size = 0;
 					tmp = NULL;
@@ -492,7 +524,9 @@ namespace ft {
 
 						node->height = std::max(height(node->left), height(node->right)) + 1;
 						if (node->parent == NULL)
-							this->root = node;
+						{
+							this->_data = node;
+						}
 						node = node->parent;
 					}
 				}
@@ -504,7 +538,7 @@ namespace ft {
 
 					_tree_clear(node->left);
 					_tree_clear(node->right);
-					//std::cout << "deleting node with key: " << node->data.first << std::endl;
+					//std::cout << "deleting node with key: " << node->data.first << " value: " << node->data.second << std::endl;
 					delete node;
 				}
 	};
@@ -519,15 +553,13 @@ namespace ft {
 	template <class Key, class T, class Compare, class Alloc>
 	bool	operator==(const map<Key, T, Compare, Alloc> &lhs,
 						const map<Key, T, Compare, Alloc> &rhs) {
-		if (lhs.size() != rhs.size())
-			return false;
-		return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+		return (lhs._data == rhs._data);
 	}
 	
 	template <class Key, class T, class Compare, class Alloc>
 	bool	operator!=(const map<Key, T, Compare, Alloc> &lhs,
 						const map<Key, T, Compare, Alloc> &rhs) {
-		return !(lhs == rhs);
+		return (lhs._data != rhs._data);
 	}
 	
 	template <class Key, class T, class Compare, class Alloc>
