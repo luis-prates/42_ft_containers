@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 23:19:53 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/06 20:26:39 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/12 23:54:35 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,11 @@ namespace ft {
 			pair& operator=(const pair &other) {
 				if (this != &other)
 				{
-					first = other.first;
-					second = other.second;
+					delete this;
+					pair *temp = new pair(other);
+					//first = other.first;
+					//second = other.second;
+					return (*temp);
 				}
 				return (*this);
 			}

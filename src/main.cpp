@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 22:05:17 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/11 22:37:32 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/13 01:55:28 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,6 +234,23 @@ int main(int argc, char** argv) {
 
 	ft_erase(mp, mp.begin());
 	std::cout << "checkpoint 3\n";
+
+	ft_erase(mp, --mp.end());
+
+	ft_erase(mp, mp.begin(), ++(++(++mp.begin())));
+	ft_erase(mp, --(--(--mp.end())), --mp.end());
+
+	mp[10] = "Hello";
+	mp[11] = "Hi there";
+	printSize(mp);
+	ft_erase(mp, --(--(--mp.end())), mp.end());
+
+	mp[12] = "ONE";
+	mp[13] = "TWO";
+	mp[14] = "THREE";
+	mp[15] = "FOUR";
+	printSize(mp);
+	ft_erase(mp, mp.begin(), mp.end());
 
 	//int sum = 0;
 	/*for (int i = 0; i < 10000; i++)

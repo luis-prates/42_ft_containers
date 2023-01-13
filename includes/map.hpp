@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 01:32:28 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/11 22:56:53 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/13 02:01:25 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,7 +263,7 @@ namespace ft {
 			void	erase(iterator position) {
 				iterator tmp = position;
 				tmp++;
-				this->erase(position++, tmp);
+				this->erase(position, tmp);
 			}
 
 			size_type erase(const key_type &k)
@@ -273,6 +273,8 @@ namespace ft {
 				{
 					return 0;
 				}
+				removePlaceholderNodes(this->_data);
+				
 
 				node_ptr nodeToErase = it._node;
 				node_ptr replacementNode = NULL;
@@ -285,45 +287,72 @@ namespace ft {
 				}
 				else
 				{
-					node_ptr rightmostNode = nodeToErase->left;
+					node_ptr	rightmostNode = nodeToErase->left;
 					while (rightmostNode->right != NULL)
 					{
 						rightmostNode = rightmostNode->right;
 					}
 
 					replacementNode = rightmostNode->left;
-					rightmostNode->data = nodeToErase->data;
-					nodeToErase = rightmostNode;
+					//node_ptr	tmp = nodeToErase;
+					if (rightmostNode->left) {
+						rightmostNode->parent->right = rightmostNode->left;
+						rightmostNode->left->parent = rightmostNode->parent;
+					}
+					//else if (!rightmostNode->right)
+					//	rightmostNode->parent->right = NULL;
+					rightmostNode->parent = nodeToErase->parent;
+					rightmostNode->right = nodeToErase->right;
+					if (isLeftChild)
+						rightmostNode->parent->left = rightmostNode;
+					else if (parentNode != NULL)
+						rightmostNode->parent->right = rightmostNode;
+					if (rightmostNode->right)
+						rightmostNode->right->parent = rightmostNode;
+					//rightmostNode->data = nodeToErase->data;
+					//nodeToErase = rightmostNode;
 				}
 
+				// algo needs fixing
 				if (replacementNode != NULL)
 				{
 					replacementNode->parent = parentNode;
+					// this is not currently working
+					if (parentNode == NULL)
+					{
+						this->_data = replacementNode;
+					}
+					else if (isLeftChild)
+					{
+						parentNode->left = replacementNode;
+					}
+					else
+					{
+						parentNode->right = replacementNode;
+					}
 				}
 
-				if (parentNode == NULL)
-				{
-					this->_data = replacementNode;
-				}
-				else if (isLeftChild)
-				{
-					parentNode->left = replacementNode;
-				}
-				else
-				{
-					parentNode->right = replacementNode;
-				}
 
-				this->_rebalance(parentNode);
 				delete nodeToErase;
+				//this->_rebalance(parentNode);
 				--this->_size;
+				mapNode<value_type> *leaf = this->_data;
+				while (leaf->right != NULL) {
+					leaf = leaf->right;
+				}
+
+				leaf->right = new mapNode<value_type>(value_type());
+				leaf->right->parent = leaf;
 
 				return 1;
 			}
 
 			void	erase(iterator first, iterator last) {
-				while (first != last)
-					this->erase((first++)._node);
+				while (first != last) {
+					value_type	tmp = first._node->data;
+					first++;
+					this->erase(tmp.first);
+				}
 			}
 
 			void	swap(map &x) {
