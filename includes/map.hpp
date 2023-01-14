@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 01:32:28 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/13 02:01:25 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/14 02:05:38 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,32 +171,6 @@ namespace ft {
 
 			// Modifiers
 
-			void removePlaceholderNodes(mapNode<value_type> *node)
-			{
-				if (node == NULL)
-				{
-					return;
-				}
-				removePlaceholderNodes(node->left);
-				removePlaceholderNodes(node->right);
-
-				if (node->data.first == value_type().first && node->data.second == value_type().second)
-				{
-					if (node->parent != NULL)
-					{
-						if (node->parent->left == node)
-						{
-							node->parent->left = NULL;
-						}
-						else
-						{
-							node->parent->right = NULL;
-						}
-					}
-					delete node;
-				}
-			}
-
 			ft::pair<iterator, bool> insert(const value_type &val)
 			{
 				mapNode<value_type> *current = this->_data;
@@ -216,6 +190,7 @@ namespace ft {
 					}
 					else
 					{
+						_add_placeholder();
 						return ft::make_pair(iterator(current), false);
 					}
 				}
@@ -238,13 +213,7 @@ namespace ft {
 
 				this->_rebalance(current);
 				++this->_size;
-				mapNode<value_type> *leaf = this->_data;
-				while (leaf->right != NULL) {
-					leaf = leaf->right;
-				}
-
-				leaf->right = new mapNode<value_type>(value_type());
-				leaf->right->parent = leaf;
+				_add_placeholder();
 
 				return ft::make_pair(iterator(current), true);
 			}
@@ -269,7 +238,7 @@ namespace ft {
 			size_type erase(const key_type &k)
 			{
 				iterator it = this->find(k);
-				if (it == this->end())
+				/*if (it == this->end())
 				{
 					return 0;
 				}
@@ -343,7 +312,7 @@ namespace ft {
 
 				leaf->right = new mapNode<value_type>(value_type());
 				leaf->right->parent = leaf;
-
+*/
 				return 1;
 			}
 
@@ -407,20 +376,18 @@ namespace ft {
 			}
 
 			size_type count(const key_type &k) const {
-				size_type res = 0;
-				const_iterator left = this->begin(), right = this->end();
-				while (left <= right) {
-					iterator mid = left + (right - left) / 2;
-					if (this->_key_eq(mid->first, k)) {
-						res++;
-						break;
-					} else if (k < mid->first) {
-						right = mid - 1;
-					} else {
-						left = mid + 1;
+				const_iterator	it = this->begin(), ite = this->end();
+				size_type		res = 0;
+
+				while (it != ite)
+				{
+					if (this->_key_eq((it++)->first, k))
+					{
+						++res;
+						break ; // Because map can't have the same key twice (or more)
 					}
 				}
-				return res;
+				return (res);
 			}
 
 			iterator	lower_bound(const key_type &k) {
@@ -557,6 +524,42 @@ namespace ft {
 							this->_data = node;
 						}
 						node = node->parent;
+					}
+				}
+
+				void	_add_placeholder() {
+					mapNode<value_type> *leaf = this->_data;
+					while (leaf->right != NULL) {
+						leaf = leaf->right;
+					}
+
+					leaf->right = new mapNode<value_type>(value_type());
+					leaf->right->parent = leaf;
+				}
+
+				void removePlaceholderNodes(mapNode<value_type> *node)
+				{
+					if (node == NULL)
+					{
+						return;
+					}
+					removePlaceholderNodes(node->left);
+					removePlaceholderNodes(node->right);
+
+					if (node->data.first == value_type().first && node->data.second == value_type().second)
+					{
+						if (node->parent != NULL)
+						{
+							if (node->parent->left == node)
+							{
+								node->parent->left = NULL;
+							}
+							else
+							{
+								node->parent->right = NULL;
+							}
+						}
+						delete node;
 					}
 				}
 				

@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 21:41:58 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/12 23:02:56 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/14 02:00:30 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,6 +188,14 @@ namespace ft {
 			}
 
 			template <class U>
+			mapIterator &operator=(mapIterator<const U, node_type> const &rhs) {
+				/*if (this == &rhs)
+					return (*this);*/
+				this->_node = rhs._node;
+				return (*this);
+			}
+
+			template <class U>
 			bool operator==(const mapIterator<U, node_type> &rhs) const {
 				return (this->_node == rhs._node);
 			}
@@ -195,6 +203,32 @@ namespace ft {
 			template <class U>
 			bool operator!=(const mapIterator<U, node_type> &rhs) const {
 				return (this->_node != rhs._node);
+			}
+
+			difference_type operator-(const mapIterator& other) const {
+				node_type *temp = _node;
+				difference_type count = 0;
+				while (temp != other._node) {
+					temp++;
+					count--;
+				}
+				return count;
+			}
+
+			mapIterator operator-(difference_type n) const {
+				node_type *temp = _node;
+				for (difference_type i = 0; i < n; i++) {
+					temp++;
+				}
+				return mapIterator(temp);
+			}
+
+			mapIterator operator+(difference_type n) const {
+				node_type *temp = _node;
+				for (difference_type i = 0; i < n; i++) {
+					temp++;
+				}
+				return mapIterator(temp);
 			}
 
 			mapIterator &operator++(void) {
