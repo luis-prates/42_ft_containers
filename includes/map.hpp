@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 01:32:28 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/14 02:05:38 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/15 17:27:09 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,8 @@ namespace ft {
 
 			explicit map(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
 				: _data(), _key_cmp(comp), _alloc(alloc), _size(0)  {
-					//this->_data = new node_type;
+					this->_data = new node_type;
+					this->_data->parent = NULL;
 			}
 
 			template <class Ite>
@@ -79,12 +80,18 @@ namespace ft {
 				const key_compare &comp = key_compare(),
 				const allocator_type &alloc = allocator_type()
 				) : _data(), _key_cmp(comp), _alloc(alloc), _size(0) {
+					this->_data = new node_type;
+					this->_data->parent = NULL;
 					this->_create_data_it(first, last);
 			}
 
 			map(const map &src) : _data(), _key_cmp(key_compare()), _alloc(allocator_type()), _size(0) {
 				//this->_data = new node_type;
-				*this = src;
+				//this->_data->parent = NULL;
+				//*this = src;
+				this->_data = new node_type;
+				this->_data->parent = NULL;
+				this->_create_data_it(src.begin(), src.end());
 			}
 
 			virtual ~map(void) {
@@ -96,6 +103,8 @@ namespace ft {
 				if (this == &rhs)
 					return (*this);
 				this->clear();
+				this->_data = new node_type;
+				this->_data->parent = NULL;
 				this->_create_data_it(rhs.begin(), rhs.end());
 				//this->_rightmost = NULL;
 				//this->_t
@@ -175,9 +184,10 @@ namespace ft {
 			{
 				mapNode<value_type> *current = this->_data;
 				mapNode<value_type> *parent = NULL;
-				removePlaceholderNodes(this->_data);
+				mapNode<value_type> *ghost = farRight(this->_data);
+				//removePlaceholderNodes(this->_data);
 
-				while (current != NULL)
+				while (current != NULL && current != ghost)
 				{
 					parent = current;
 					if (_key_cmp(val.first, current->data.first))
@@ -190,7 +200,7 @@ namespace ft {
 					}
 					else
 					{
-						_add_placeholder();
+						//_add_placeholder();
 						return ft::make_pair(iterator(current), false);
 					}
 				}
@@ -211,9 +221,21 @@ namespace ft {
 					parent->right = current;
 				}
 
+				if (current->parent == ghost->parent)
+				{
+					if (parent == NULL) {
+						ghost->parent = current;
+						current->right = ghost;
+					}
+					else if (parent != NULL && parent->right == current) {
+						ghost->parent = current;
+						current->right = ghost;
+					}
+				}
 				this->_rebalance(current);
+
 				++this->_size;
-				_add_placeholder();
+				//_add_placeholder();
 
 				return ft::make_pair(iterator(current), true);
 			}
