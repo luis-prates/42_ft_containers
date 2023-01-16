@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 01:32:28 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/16 21:58:43 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/16 22:53:03 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -296,6 +296,7 @@ namespace ft {
 						rightmostNode->parent->right = rightmostNode->left;
 						rightmostNode->left->parent = rightmostNode->parent;
 					}
+					
 					if (nodeToErase->left != replacementNode) {
 						if (!rightmostNode->left)
 							replacementNode->parent->right = NULL;
@@ -307,12 +308,10 @@ namespace ft {
 						nodeToErase->right->parent = replacementNode;
 				}
 
-				// algo needs fixing
 				if (replacementNode != NULL)
 				{
 					replacementNode->parent = parentNode;
 				}
-				// this is not currently working
 				if (parentNode == NULL)
 				{
 					this->_data = replacementNode;
@@ -610,13 +609,15 @@ namespace ft {
 	template <class Key, class T, class Compare, class Alloc>
 	bool	operator==(const map<Key, T, Compare, Alloc> &lhs,
 						const map<Key, T, Compare, Alloc> &rhs) {
-		return (lhs._data == rhs._data);
+		if (lhs.size() != rhs.size())
+			return false;
+		return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 	}
 	
 	template <class Key, class T, class Compare, class Alloc>
 	bool	operator!=(const map<Key, T, Compare, Alloc> &lhs,
 						const map<Key, T, Compare, Alloc> &rhs) {
-		return (lhs._data != rhs._data);
+		return (!(lhs == rhs));
 	}
 	
 	template <class Key, class T, class Compare, class Alloc>
