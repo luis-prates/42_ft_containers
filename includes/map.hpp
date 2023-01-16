@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 01:32:28 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/16 01:27:45 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/16 21:58:43 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,9 +297,10 @@ namespace ft {
 						rightmostNode->left->parent = rightmostNode->parent;
 					}
 					if (nodeToErase->left != replacementNode) {
+						if (!rightmostNode->left)
+							replacementNode->parent->right = NULL;
 						replacementNode->left = nodeToErase->left;
 						nodeToErase->left->parent = replacementNode;
-						
 					}
 					replacementNode->right = nodeToErase->right;
 					if (nodeToErase->right)
