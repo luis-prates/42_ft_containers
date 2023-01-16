@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 22:05:17 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/13 01:55:28 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/16 23:03:03 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,13 @@ struct Buffer
 // erase
 #define T1 int
 #define T2 std::string
-typedef ft::pair<const T1, T2> T3;
+typedef ft::pair<T1, T2> T3;
+
+// insert
+/*#define T1 int
+#define T2 std::string
+typedef ft::map<T1, T2>::value_type T3;
+typedef ft::map<T1, T2>::iterator iterator;*/
 
 #define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
@@ -80,7 +86,7 @@ template <typename MAP, typename U>
 void	ft_erase(MAP &mp, U param)
 {
 	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
-	mp.erase(param);
+	std::cout << "ret: " << mp.erase(param) << std::endl;
 	printSize(mp);
 }
 
@@ -91,6 +97,32 @@ void	ft_erase(MAP &mp, U param, V param2)
 	mp.erase(param, param2);
 	printSize(mp);
 }
+
+// insert
+/*
+template <typename MAP, typename U>
+void	ft_insert(MAP &mp, U param)
+{
+	ft::pair<iterator, bool> tmp;
+
+	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+	tmp = mp.insert(param);
+	std::cout << "insert return: " << printPair(tmp.first);
+	std::cout << "Created new node: " << tmp.second << std::endl;
+	printSize(mp);
+}
+
+template <typename MAP, typename U, typename V>
+void	ft_insert(MAP &mp, U param, V param2)
+{
+	iterator tmp;
+
+	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+	tmp = mp.insert(param, param2);
+	std::cout << "insert return: " << printPair(tmp);
+	printSize(mp);
+}*/
+
 template<typename T>
 class MutantStack : public ft::stack<T>
 {
@@ -155,12 +187,12 @@ int main(int argc, char** argv) {
 		//NORMAL ! :P
 	}
 	
-	/*for (int i = 0; i < 20; ++i)
+	for (int i = 0; i < COUNT; ++i)
 	{
-		//int rng1 = rand(), rng2 = rand();
-		std::cout << "inserting " << i << " with key pair: " << i << " : " << i << std::endl; 
-		map_int.insert(ft::make_pair(i, i));
-	}*/
+		int rng1 = rand(), rng2 = rand();
+		//std::cout << "inserting " << i << " with key pair: " << i << " : " << i << std::endl; 
+		map_int.insert(ft::make_pair(rng1, rng2));
+	}
 
 	//! for comp and bounds test
 	/*typedef ft::map<int, int>::value_type T3;
@@ -214,10 +246,11 @@ int main(int argc, char** argv) {
 	printSize(mp);
 	printSize(mp_range);
 	printSize(mp_copy);
-	return (0);
-	*/
+	return (0);*/
+	
 
 	//erase
+	/*
 	std::list<T3> lst;
 	unsigned int lst_size = 10;
 	std::cout << "checkpoint -1\n";
@@ -235,6 +268,8 @@ int main(int argc, char** argv) {
 	ft_erase(mp, mp.begin());
 	std::cout << "checkpoint 3\n";
 
+	//TODO: fix this one. When deleted node is the one attached to the ghost node!
+	//! Fixed!
 	ft_erase(mp, --mp.end());
 
 	ft_erase(mp, mp.begin(), ++(++(++mp.begin())));
@@ -250,26 +285,116 @@ int main(int argc, char** argv) {
 	mp[14] = "THREE";
 	mp[15] = "FOUR";
 	printSize(mp);
-	ft_erase(mp, mp.begin(), mp.end());
+	ft_erase(mp, mp.begin(), mp.end());*/
 
-	//int sum = 0;
-	/*for (int i = 0; i < 10000; i++)
+	// erase 2
+	/*
+	std::list<T3> lst;
+	unsigned int lst_size = 6;
+	for (unsigned int i = 0; i < lst_size; ++i)
+		lst.push_back(T3(i, std::string((lst_size - i), i + 65)));
+	ft::map<T1, T2> mp(lst.begin(), lst.end());
+	printSize(mp);
+
+	for (int i = 2; i < 4; ++i)
+		ft_erase(mp, i);
+
+	ft_erase(mp, mp.begin()->first);
+	ft_erase(mp, (--mp.end())->first);
+
+	mp[-1] = "Hello";
+	mp[10] = "Hi there";
+	mp[10] = "Hi there";
+	printSize(mp);
+
+	ft_erase(mp, 0);
+	ft_erase(mp, 1);
+	*/
+
+	// tricky erase
+	/*
+	ft::map<T1, T2> mp;
+
+	mp[42] = "lol";
+
+	mp[50] = "mdr";
+	mp[25] = "funny";
+
+	mp[46] = "bunny";
+	mp[21] = "fizz";
+	mp[30] = "buzz";
+	mp[55] = "fuzzy";
+
+	mp[18] = "bee";
+	mp[23] = "coconut";
+	mp[28] = "diary";
+	mp[35] = "fiesta";
+	mp[44] = "hello";
+	mp[48] = "world";
+	mp[53] = "this is a test";
+	mp[80] = "hey";
+
+	mp[12] = "no";
+	mp[20] = "idea";
+	mp[22] = "123";
+	mp[24] = "345";
+	mp[27] = "27";
+	mp[29] = "29";
+	mp[33] = "33";
+	mp[38] = "38";
+
+	mp[43] = "1";
+	mp[45] = "2";
+	mp[47] = "3";
+	mp[49] = "4";
+	mp[51] = "5";
+	mp[54] = "6";
+	mp[60] = "7";
+	mp[90] = "8";
+
+	printSize(mp);
+
+	ft_erase(mp, 25); // right != NULL; left != NULL
+	ft_erase(mp, 55); // right != NULL; left != NULL
+	*/
+	int sum = 0;
+	for (int i = 0; i < COUNT; i++)
 	{
 		int access = rand();
 		sum += map_int[access];
 	}
-	std::cout << "should be constant with the same seed: " << sum << std::endl;*/
+	std::cout << "should be constant with the same seed: " << sum << std::endl;
 
-	/*{
+	{
 		ft::map<int, int> copy = map_int;
-	}*/
-	/*MutantStack<char> iterable_stack;
+	}
+	MutantStack<char> iterable_stack;
 	for (char letter = 'a'; letter <= 'z'; letter++)
 		iterable_stack.push(letter);
 	for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end(); it++)
 	{
 		std::cout << *it;
-	}*/
+	}
+
+	// insert
+	/*ft::map<T1, T2> mp, mp2;
+
+	ft_insert(mp, T3(42, "lol"));
+	ft_insert(mp, T3(42, "mdr"));
+
+	ft_insert(mp, T3(50, "mdr"));
+	ft_insert(mp, T3(35, "funny"));
+
+	ft_insert(mp, T3(45, "bunny"));
+	ft_insert(mp, T3(21, "fizz"));
+	ft_insert(mp, T3(38, "buzz"));
+
+	ft_insert(mp, mp.begin(), T3(55, "fuzzy"));
+
+	ft_insert(mp2, mp2.begin(), T3(1337, "beauty"));
+	ft_insert(mp2, mp2.end(), T3(1000, "Hello"));
+	ft_insert(mp2, mp2.end(), T3(1500, "World"));*/
+	
 	std::cout << std::endl;
 	return (0);
 }
