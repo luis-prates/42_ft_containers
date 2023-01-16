@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 01:32:28 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/15 17:27:09 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/16 00:35:59 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ namespace ft {
 			explicit map(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
 				: _data(), _key_cmp(comp), _alloc(alloc), _size(0)  {
 					this->_data = new node_type;
+					this->_ghost = _data;
+					this->_ghost->height = 0;
 					this->_data->parent = NULL;
 			}
 
@@ -81,6 +83,8 @@ namespace ft {
 				const allocator_type &alloc = allocator_type()
 				) : _data(), _key_cmp(comp), _alloc(alloc), _size(0) {
 					this->_data = new node_type;
+					this->_ghost = _data;
+					this->_ghost->height = 0;
 					this->_data->parent = NULL;
 					this->_create_data_it(first, last);
 			}
@@ -90,6 +94,8 @@ namespace ft {
 				//this->_data->parent = NULL;
 				//*this = src;
 				this->_data = new node_type;
+				this->_ghost = _data;
+				this->_ghost->height = 0;
 				this->_data->parent = NULL;
 				this->_create_data_it(src.begin(), src.end());
 			}
@@ -127,11 +133,11 @@ namespace ft {
 			// Iterators
 			
 			iterator	begin(void) {
-				return (iterator(farLeft(this->_data)));
+				return (iterator(farLeft(this->_data, _ghost)));
 			}
 
 			const_iterator	begin(void) const {
-				return (const_iterator(farLeft(this->_data)));
+				return (const_iterator(farLeft(this->_data, _ghost)));
 			}
 
 			iterator	end(void) {
@@ -260,81 +266,73 @@ namespace ft {
 			size_type erase(const key_type &k)
 			{
 				iterator it = this->find(k);
-				/*if (it == this->end())
+				if (it == this->end())
 				{
 					return 0;
 				}
-				removePlaceholderNodes(this->_data);
+				//removePlaceholderNodes(this->_data);
 				
 
 				node_ptr nodeToErase = it._node;
 				node_ptr replacementNode = NULL;
+				node_ptr	ghost = this->end()._node;
 				node_ptr parentNode = nodeToErase->parent;
 				bool isLeftChild = (parentNode != NULL && parentNode->left == nodeToErase);
 
-				if (nodeToErase->left == NULL || nodeToErase->right == NULL)
+				if (nodeToErase->left == NULL || (nodeToErase->right == NULL || nodeToErase->right == ghost))
 				{
 					replacementNode = (nodeToErase->left == NULL) ? nodeToErase->right : nodeToErase->left;
 				}
 				else
 				{
 					node_ptr	rightmostNode = nodeToErase->left;
-					while (rightmostNode->right != NULL)
+					while (rightmostNode->right != NULL && rightmostNode->right != ghost)
 					{
 						rightmostNode = rightmostNode->right;
 					}
 
-					replacementNode = rightmostNode->left;
-					//node_ptr	tmp = nodeToErase;
+					replacementNode = rightmostNode;
 					if (rightmostNode->left) {
 						rightmostNode->parent->right = rightmostNode->left;
 						rightmostNode->left->parent = rightmostNode->parent;
 					}
-					//else if (!rightmostNode->right)
-					//	rightmostNode->parent->right = NULL;
-					rightmostNode->parent = nodeToErase->parent;
-					rightmostNode->right = nodeToErase->right;
-					if (isLeftChild)
-						rightmostNode->parent->left = rightmostNode;
-					else if (parentNode != NULL)
-						rightmostNode->parent->right = rightmostNode;
-					if (rightmostNode->right)
-						rightmostNode->right->parent = rightmostNode;
-					//rightmostNode->data = nodeToErase->data;
-					//nodeToErase = rightmostNode;
+					if (nodeToErase->left != replacementNode) {
+						replacementNode->left = nodeToErase->left;
+						nodeToErase->left->parent = replacementNode;
+						
+					}
+					replacementNode->right = nodeToErase->right;
+					if (nodeToErase->right)
+						nodeToErase->right->parent = replacementNode;
 				}
 
 				// algo needs fixing
 				if (replacementNode != NULL)
 				{
 					replacementNode->parent = parentNode;
-					// this is not currently working
-					if (parentNode == NULL)
-					{
-						this->_data = replacementNode;
-					}
-					else if (isLeftChild)
-					{
-						parentNode->left = replacementNode;
-					}
-					else
-					{
-						parentNode->right = replacementNode;
-					}
+				}
+				// this is not currently working
+				if (parentNode == NULL)
+				{
+					this->_data = replacementNode;
+				}
+				else if (isLeftChild)
+				{
+					parentNode->left = replacementNode;
+				}
+				else
+				{
+					parentNode->right = replacementNode;
 				}
 
-
+				if (nodeToErase->right == ghost && replacementNode != ghost) {
+					replacementNode->right = ghost;
+					ghost->parent = replacementNode;	
+				}
 				delete nodeToErase;
-				//this->_rebalance(parentNode);
+				this->_rebalance(parentNode);
 				--this->_size;
-				mapNode<value_type> *leaf = this->_data;
-				while (leaf->right != NULL) {
-					leaf = leaf->right;
-				}
 
-				leaf->right = new mapNode<value_type>(value_type());
-				leaf->right->parent = leaf;
-*/
 				return 1;
 			}
 
@@ -488,6 +486,7 @@ namespace ft {
 				allocator_type						_alloc;
 				size_type							_size;
 				const static size_type 				_max_size;
+				node_ptr							_ghost;
 
 				template <class Ite>
 				void	_create_data_it(Ite first, Ite last) {
@@ -539,8 +538,11 @@ namespace ft {
 								node = rotateLeft(node);
 							}
 						}
-
-						node->height = std::max(height(node->left), height(node->right)) + 1;
+						
+						if (node != _ghost)
+							node->height = std::max(height(node->left), height(node->right)) + 1;
+						else
+							node->height = 0;
 						if (node->parent == NULL)
 						{
 							this->_data = node;

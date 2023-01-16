@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 21:41:58 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/15 17:21:15 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/16 01:14:10 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,10 @@ namespace ft {
 		if (!node)
 			return (NULL);
 		while (node->right != NULL) {
-			node->height = std::max(height(node->left), height(node->right)) + 1;
+			//node->height = std::max(height(node->left), height(node->right)) + 1;
 			node = node->right;
 		}
-		node->height = std::max(height(node->left), height(node->right)) + 1;
+		//node->height = std::max(height(node->left), height(node->right)) + 1;
 		return (node);
 	}
 
@@ -74,22 +74,27 @@ namespace ft {
 	}*/
 
 	template <class T>
-	mapNode<T> *farLeft(mapNode<T> *node) {
+	mapNode<T> *farLeft(mapNode<T> *node, mapNode<T> *ghost) {
 		if (!node)
 			return NULL;
 		while (node->left != NULL) {
 			node->height = std::max(height(node->left), height(node->right)) + 1;
 			node = node->left;
 		}
-		node->height = std::max(height(node->left), height(node->right)) + 1;
+		if (node != ghost)
+			node->height = std::max(height(node->left), height(node->right)) + 1;
+		else
+			node->height = 0;
+		if (ghost != NULL && node->right == ghost)
+			node->height = 1;
 		return (node);
 	}
 
-	/*template <class T>
+	template <class T>
 	mapNode<T> *farLeft(mapNode<T> *node) {
 		if (node->left == NULL) return node;
 			return farLeft(node->left);
-	}*/
+	}
 	
 	template <class T>
 		int height(mapNode<T> *node) {
@@ -117,7 +122,10 @@ namespace ft {
 		}
 		else {
 			newRoot->parent = node->parent;
-			newRoot->parent->left = newRoot;
+			if (node->parent->right == node)
+				newRoot->parent->right = newRoot;
+			else if (node->parent->left == node)
+				newRoot->parent->left = newRoot;
 		}
 		node->parent = newRoot;
 		if (node->left)
@@ -137,7 +145,10 @@ namespace ft {
 		}
 		else {
 			newRoot->parent = node->parent;
-			newRoot->parent->right = newRoot;
+			if (node->parent->right == node)
+				newRoot->parent->right = newRoot;
+			else if (node->parent->left == node)
+				newRoot->parent->left = newRoot;
 		}
 		node->parent = newRoot;
 		if (node->right)
