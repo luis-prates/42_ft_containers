@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 01:32:28 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/16 22:53:03 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/18 03:17:58 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,6 @@ namespace ft {
 			}
 
 			map(const map &src) : _data(), _key_cmp(key_compare()), _alloc(allocator_type()), _size(0) {
-				//this->_data = new node_type;
-				//this->_data->parent = NULL;
-				//*this = src;
 				this->_data = new node_type;
 				this->_ghost = _data;
 				this->_ghost->height = 0;
@@ -101,8 +98,8 @@ namespace ft {
 			}
 
 			virtual ~map(void) {
-				this->clear();
-				delete this->_data;
+				_tree_clear(this->_data);
+				delete _ghost;
 			}
 
 			map	&operator=(map const &rhs) {
@@ -110,10 +107,10 @@ namespace ft {
 					return (*this);
 				this->clear();
 				this->_data = new node_type;
+				this->_ghost = _data;
+				this->_ghost->height = 0;
 				this->_data->parent = NULL;
 				this->_create_data_it(rhs.begin(), rhs.end());
-				//this->_rightmost = NULL;
-				//this->_t
 				return (*this);
 			}
 
@@ -191,41 +188,27 @@ namespace ft {
 				mapNode<value_type> *current = this->_data;
 				mapNode<value_type> *parent = NULL;
 				mapNode<value_type> *ghost = farRight(this->_data);
-				//removePlaceholderNodes(this->_data);
 
 				while (current != NULL && current != ghost)
 				{
 					parent = current;
 					if (_key_cmp(val.first, current->data.first))
-					{
 						current = current->left;
-					}
 					else if (_key_cmp(current->data.first, val.first))
-					{
 						current = current->right;
-					}
 					else
-					{
-						//_add_placeholder();
 						return ft::make_pair(iterator(current), false);
-					}
 				}
 
 				current = new mapNode<value_type>(val);
 				current->parent = parent;
 
 				if (parent == NULL)
-				{
 					this->_data = current;
-				}
 				else if (_key_cmp(val.first, parent->data.first))
-				{
 					parent->left = current;
-				}
 				else
-				{
 					parent->right = current;
-				}
 
 				if (current->parent == ghost->parent)
 				{
@@ -241,7 +224,6 @@ namespace ft {
 				this->_rebalance(current);
 
 				++this->_size;
-				//_add_placeholder();
 
 				return ft::make_pair(iterator(current), true);
 			}
@@ -267,11 +249,7 @@ namespace ft {
 			{
 				iterator it = this->find(k);
 				if (it == this->end())
-				{
 					return 0;
-				}
-				//removePlaceholderNodes(this->_data);
-				
 
 				node_ptr nodeToErase = it._node;
 				node_ptr replacementNode = NULL;
@@ -280,16 +258,12 @@ namespace ft {
 				bool isLeftChild = (parentNode != NULL && parentNode->left == nodeToErase);
 
 				if (nodeToErase->left == NULL || (nodeToErase->right == NULL || nodeToErase->right == ghost))
-				{
 					replacementNode = (nodeToErase->left == NULL) ? nodeToErase->right : nodeToErase->left;
-				}
 				else
 				{
 					node_ptr	rightmostNode = nodeToErase->left;
 					while (rightmostNode->right != NULL && rightmostNode->right != ghost)
-					{
 						rightmostNode = rightmostNode->right;
-					}
 
 					replacementNode = rightmostNode;
 					if (rightmostNode->left && rightmostNode->parent != nodeToErase) {
@@ -309,21 +283,13 @@ namespace ft {
 				}
 
 				if (replacementNode != NULL)
-				{
 					replacementNode->parent = parentNode;
-				}
 				if (parentNode == NULL)
-				{
 					this->_data = replacementNode;
-				}
 				else if (isLeftChild)
-				{
 					parentNode->left = replacementNode;
-				}
 				else
-				{
 					parentNode->right = replacementNode;
-				}
 
 				if (nodeToErase->right == ghost && replacementNode != ghost) {
 					replacementNode->right = ghost;
@@ -355,7 +321,8 @@ namespace ft {
 			void clear(void)
 			{
 				_tree_clear(this->_data);
-				this->_data = NULL;
+				this->_data = _ghost;
+				_ghost->parent = NULL;
 				this->_size = 0;
 			}
 
@@ -474,9 +441,6 @@ namespace ft {
 				return (res);
 			}
 
-			/*protected:
-				mapNode<value_type>		*root;*/
-			
 			private:
 				typedef ft::mapNode<value_type>		node_type;
 				typedef node_type					*node_ptr;
@@ -494,15 +458,21 @@ namespace ft {
 				}
 
 				void	_cpy_content(map &src) {
-					this->clear();
+					//this->clear();
+					_tree_clear(this->_data);
+					this->_data = _ghost;
+					
+
 					node_ptr tmp = this->_data;
 					
 					this->_data = src._data;
 					this->_key_cmp = src._key_cmp;
 					this->_alloc = src._alloc;
 					this->_size = src._size;
+					this->_ghost = src._ghost;
 					src._data = tmp;
 					src._size = 0;
+					src._ghost = NULL;
 					tmp = NULL;
 				}
 
@@ -519,24 +489,16 @@ namespace ft {
 						if (balance > 1)
 						{
 							if (balanceFactor(node->left) < 0)
-							{
 								node = rotateLeftRight(node);
-							}
 							else
-							{
 								node = rotateRight(node);
-							}
 						}
 						else if (balance < -1)
 						{
 							if (balanceFactor(node->right) > 0)
-							{
 								node = rotateRightLeft(node);
-							}
 							else
-							{
 								node = rotateLeft(node);
-							}
 						}
 						
 						if (node != _ghost)
@@ -544,52 +506,14 @@ namespace ft {
 						else
 							node->height = 0;
 						if (node->parent == NULL)
-						{
 							this->_data = node;
-						}
 						node = node->parent;
 					}
 				}
 
-				void	_add_placeholder() {
-					mapNode<value_type> *leaf = this->_data;
-					while (leaf->right != NULL) {
-						leaf = leaf->right;
-					}
-
-					leaf->right = new mapNode<value_type>(value_type());
-					leaf->right->parent = leaf;
-				}
-
-				void removePlaceholderNodes(mapNode<value_type> *node)
-				{
-					if (node == NULL)
-					{
-						return;
-					}
-					removePlaceholderNodes(node->left);
-					removePlaceholderNodes(node->right);
-
-					if (node->data.first == value_type().first && node->data.second == value_type().second)
-					{
-						if (node->parent != NULL)
-						{
-							if (node->parent->left == node)
-							{
-								node->parent->left = NULL;
-							}
-							else
-							{
-								node->parent->right = NULL;
-							}
-						}
-						delete node;
-					}
-				}
-				
 				void	_tree_clear(node_ptr node)
 				{
-					if (node == NULL)
+					if (node == NULL || node == _ghost)
 						return;
 
 					_tree_clear(node->left);

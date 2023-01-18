@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 21:41:58 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/16 22:31:11 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/18 03:22:53 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,19 +59,10 @@ namespace ft {
 	mapNode<T> *farRight(mapNode<T> *node) {
 		if (!node)
 			return (NULL);
-		while (node->right != NULL) {
-			//node->height = std::max(height(node->left), height(node->right)) + 1;
+		while (node->right != NULL)
 			node = node->right;
-		}
-		//node->height = std::max(height(node->left), height(node->right)) + 1;
 		return (node);
 	}
-
-	/*template <class T>
-	mapNode<T> *farRight(mapNode<T> *node) {
-		if (node->right == NULL) return node;
-			return farRight(node->right);
-	}*/
 
 	template <class T>
 	mapNode<T> *farLeft(mapNode<T> *node, mapNode<T> *ghost) {
@@ -117,9 +108,8 @@ namespace ft {
 		newRoot->right = node;
 		node->height = std::max(height(node->left), height(node->right)) + 1;
 		newRoot->height = std::max(height(newRoot->left), height(newRoot->right)) + 1;
-		if (node->parent == NULL) {
+		if (node->parent == NULL)
 			newRoot->parent = NULL;
-		}
 		else {
 			newRoot->parent = node->parent;
 			if (node->parent->right == node)
@@ -140,9 +130,8 @@ namespace ft {
 		newRoot->left = node;
 		node->height = std::max(height(node->left), height(node->right)) + 1;
 		newRoot->height = std::max(height(newRoot->left), height(newRoot->right)) + 1;
-		if (node->parent == NULL) {
+		if (node->parent == NULL)
 			newRoot->parent = NULL;
-		}
 		else {
 			newRoot->parent = node->parent;
 			if (node->parent->right == node)
@@ -200,8 +189,6 @@ namespace ft {
 
 			template <class U>
 			mapIterator &operator=(mapIterator<const U, node_type> const &rhs) {
-				/*if (this == &rhs)
-					return (*this);*/
 				this->_node = rhs._node;
 				return (*this);
 			}
@@ -228,17 +215,15 @@ namespace ft {
 
 			mapIterator operator-(difference_type n) const {
 				node_type *temp = _node;
-				for (difference_type i = 0; i < n; i++) {
+				for (difference_type i = 0; i < n; i++)
 					temp++;
-				}
 				return mapIterator(temp);
 			}
 
 			mapIterator operator+(difference_type n) const {
 				node_type *temp = _node;
-				for (difference_type i = 0; i < n; i++) {
+				for (difference_type i = 0; i < n; i++)
 					temp++;
-				}
 				return mapIterator(temp);
 			}
 
