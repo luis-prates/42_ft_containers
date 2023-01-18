@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 01:32:28 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/18 03:17:58 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/18 23:00:14 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@
 # include <sstream>
 # include "utils/pairs.hpp"
 # include "utils/map_iterator.hpp"
-//# include "utils/avl_iterator.hpp"
-//# include "utils/avl_tree.hpp"
 # include "iterator/reverse_iterator.hpp"
 # include "utils/equal.hpp"
 # include "utils/lexicographical_compare.hpp"
@@ -69,6 +67,8 @@ namespace ft {
 
 			explicit map(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
 				: _data(), _key_cmp(comp), _alloc(alloc), _size(0)  {
+					//this->_data = _allocator_rebind_node.allocate(sizeof(ft::mapNode<value_type>));
+					//_allocator_rebind_node.construct(this->_data, value_type());
 					this->_data = new node_type;
 					this->_ghost = _data;
 					this->_ghost->height = 0;
@@ -114,6 +114,12 @@ namespace ft {
 				return (*this);
 			}
 
+			allocator_type	get_allocator() const {
+				return (_alloc);
+			}
+
+			// Element access
+
 			mapped_type& at(const key_type& key) {
 				iterator it = this->find(key);
 				if (it == this->end())
@@ -125,6 +131,10 @@ namespace ft {
 				if (this->end() == it )
 					throw std::out_of_range("map::at:  key not found");
 				return it->second;
+			}
+
+			mapped_type	&operator[](const key_type &k) {
+				return (this->insert(value_type(k, mapped_type())).first->second);
 			}
 
 			// Iterators
@@ -173,12 +183,6 @@ namespace ft {
 
 			bool	empty(void) const {
 				return (this->_size == 0 ? true : false);
-			}
-
-			// Element access
-
-			mapped_type	&operator[](const key_type &k) {
-				return (this->insert(value_type(k, mapped_type())).first->second);
 			}
 
 			// Modifiers
@@ -444,6 +448,7 @@ namespace ft {
 			private:
 				typedef ft::mapNode<value_type>		node_type;
 				typedef node_type					*node_ptr;
+				typedef typename allocator_type::template rebind<ft::mapNode<value_type> >::other			allocator_rebind_node;
 
 				node_ptr							_data;
 				key_compare							_key_cmp;
@@ -451,6 +456,7 @@ namespace ft {
 				size_type							_size;
 				const static size_type 				_max_size;
 				node_ptr							_ghost;
+				allocator_rebind_node				_allocator_rebind_node;
 
 				template <class Ite>
 				void	_create_data_it(Ite first, Ite last) {

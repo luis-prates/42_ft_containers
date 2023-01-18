@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 22:05:17 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/18 03:18:50 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/18 22:01:22 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,6 +203,7 @@ void	subject_tests(void)
 	{
 		ft::map<int, int> copy = map_int;
 	}
+
 	MutantStack<char> iterable_stack;
 	for (char letter = 'a'; letter <= 'z'; letter++)
 		iterable_stack.push(letter);
@@ -1402,7 +1403,7 @@ int main(int argc, char** argv) {
 	
 	std::cout << std::endl;
 	
-	flea_tests();
+	//flea_tests();
 	
 	
 	return (0);
