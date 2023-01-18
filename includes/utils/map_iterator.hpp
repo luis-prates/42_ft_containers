@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 21:41:58 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/18 03:22:53 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/18 23:17:43 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ namespace ft {
 
 			mapNode(const T &src = T()) : data(src), parent(NULL), left(NULL), right(NULL), height(1) {};
 
-			mapNode(const mapNode<T> &src)
+			mapNode(const mapNode<T> &src) : data(src.data)
 			{
-				this->data = src.data;
+				//this->data(src.data);
 				this->parent = src.parent;
 				this->left = src.left;
 				this->right = src.right;

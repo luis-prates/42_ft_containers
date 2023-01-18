@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 01:32:28 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/18 23:00:14 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/18 23:19:58 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,8 @@ namespace ft {
 
 			explicit map(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
 				: _data(), _key_cmp(comp), _alloc(alloc), _size(0)  {
-					//this->_data = _allocator_rebind_node.allocate(sizeof(ft::mapNode<value_type>));
-					//_allocator_rebind_node.construct(this->_data, value_type());
-					this->_data = new node_type;
+					this->_data = _allocator_rebind_node.allocate(sizeof(ft::mapNode<value_type>));
+					_allocator_rebind_node.construct(this->_data, value_type());
 					this->_ghost = _data;
 					this->_ghost->height = 0;
 					this->_data->parent = NULL;
@@ -82,7 +81,8 @@ namespace ft {
 				const key_compare &comp = key_compare(),
 				const allocator_type &alloc = allocator_type()
 				) : _data(), _key_cmp(comp), _alloc(alloc), _size(0) {
-					this->_data = new node_type;
+					this->_data = _allocator_rebind_node.allocate(sizeof(ft::mapNode<value_type>));
+					_allocator_rebind_node.construct(this->_data, value_type());
 					this->_ghost = _data;
 					this->_ghost->height = 0;
 					this->_data->parent = NULL;
@@ -90,7 +90,8 @@ namespace ft {
 			}
 
 			map(const map &src) : _data(), _key_cmp(key_compare()), _alloc(allocator_type()), _size(0) {
-				this->_data = new node_type;
+				this->_data = _allocator_rebind_node.allocate(sizeof(ft::mapNode<value_type>));
+				_allocator_rebind_node.construct(this->_data, value_type());
 				this->_ghost = _data;
 				this->_ghost->height = 0;
 				this->_data->parent = NULL;
@@ -106,7 +107,8 @@ namespace ft {
 				if (this == &rhs)
 					return (*this);
 				this->clear();
-				this->_data = new node_type;
+				this->_data = _allocator_rebind_node.allocate(sizeof(ft::mapNode<value_type>));
+				_allocator_rebind_node.construct(this->_data, value_type());
 				this->_ghost = _data;
 				this->_ghost->height = 0;
 				this->_data->parent = NULL;
@@ -204,7 +206,8 @@ namespace ft {
 						return ft::make_pair(iterator(current), false);
 				}
 
-				current = new mapNode<value_type>(val);
+				current = _allocator_rebind_node.allocate(sizeof(ft::mapNode<value_type>));
+				_allocator_rebind_node.construct(current, val);
 				current->parent = parent;
 
 				if (parent == NULL)

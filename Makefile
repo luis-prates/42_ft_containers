@@ -26,7 +26,9 @@ clear_terminal:
 
 debug: CXXFLAGS += -DDEBUG -g -fsanitize=address
 
-debug: $(NAME_STD) $(NAME_FT) 
+debug: $(NAME_STD) $(NAME_FT)
+
+ft: $(NAME_FT)
 
 all: $(NAME_STD) $(NAME_FT) 
 
