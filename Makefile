@@ -1,6 +1,6 @@
 clear_terminal := clear
 CXX = c++
-CXXFLAGS := -std=c++98 -Wall -Wextra -Werror -g -fsanitize=address
+CXXFLAGS := -std=c++98 -Wall -Wextra -Werror -g #-fsanitize=address
 FT = 0
 FTFLAGS := "-D=FT $(FT)"
 library_option := -l

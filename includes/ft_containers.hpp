@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/04 19:37:49 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/07 02:37:55 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/18 23:33:29 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 //# if FT // using ft library
 //# include "stack.hpp"
-#  include <iostream>
+/*#  include <iostream>
 #  include <string>
 #  include <deque>
 #  include "vector.hpp"
@@ -38,7 +38,7 @@
 #  include <map>
 #  include <stack>
 #  include <utility>
-#  include <vector>
+#  include <vector>*/
 //   namespace ft = std;
 //#endif
 

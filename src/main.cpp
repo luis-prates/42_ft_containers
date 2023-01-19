@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 22:05:17 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/18 22:01:22 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/18 23:55:01 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1035,21 +1035,21 @@ void test_vector_non_member_functions() {
 	}
 }
 
-// void test_map_constructors() {
-// 	say("****************", RED);
-// 	say("* CONSTRUCTORS *", RED);
-// 	say("****************", RED);
-// 	{
-// 		say("Construct an empty vector", YELLOW);
-// 		std::map<char,int> mymap;
-// 		say("Insert Values", YELLOW);
-// 		mymap['b'] = 100;
-// 		mymap['a'] = 200;
-// 		mymap['c'] = 300;
-// 		for (std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
-//     		std::cout << it->first << " => " << it->second << std::endl;
-// 	}
-// }
+void test_map_constructors() {
+	say("****************", RED);
+	say("* CONSTRUCTORS *", RED);
+	say("****************", RED);
+	{
+		say("Construct an empty vector", YELLOW);
+		ft::map<char,int> mymap;
+		say("Insert Values", YELLOW);
+		mymap['b'] = 100;
+		mymap['a'] = 200;
+		mymap['c'] = 300;
+		for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+    		std::cout << it->first << " => " << it->second << std::endl;
+	}
+}
 
 bool fncomp (char lhs, char rhs) {return lhs<rhs;}
 
@@ -1058,24 +1058,24 @@ struct classcomp {
 	{return lhs<rhs;}
 };
 
-void test_map_constructors() {
-	ft::map<char,int> first;
+// void test_map_constructors() {
+// 	ft::map<char,int> first;
 
-	first['a']=10;
-	first['b']=30;
-	first['c']=50;
-	first['d']=70;
+// 	first['a']=10;
+// 	first['b']=30;
+// 	first['c']=50;
+// 	first['d']=70;
 
 
-	ft::map<char,int> second (first.begin(),first.end());
+// 	ft::map<char,int> second (first.begin(),first.end());
 
-	ft::map<char,int> third (second);
+// 	ft::map<char,int> third (second);
 
-	ft::map<char,int,classcomp> fourth;                 // class as Compare
+// 	ft::map<char,int,classcomp> fourth;                 // class as Compare
 
-	bool(*fn_pt)(char,char) = fncomp;
-	ft::map<char,int,bool(*)(char,char)> fifth (fn_pt); // function pointer as Compare
-}
+// 	bool(*fn_pt)(char,char) = fncomp;
+// 	ft::map<char,int,bool(*)(char,char)> fifth (fn_pt); // function pointer as Compare
+// }
 
 void test_map_iterators() {
  	say("*****************", RED);
@@ -1154,8 +1154,9 @@ void test_map_capacity() {
 		ft::map<int,int> mymap;
 
 		if (mymap.max_size()>1000) {
-			for (i=0; i<1000; i++) mymap[i]=0;
-				std::cout << "The map contains 1000 elements.\n";
+			for (i=0; i<1000; i++)
+				mymap[i]=0;
+			std::cout << "The map contains 1000 elements.\n";
 		}
 		else
 			std::cout << "The map could not hold 1000 elements.\n";
@@ -1403,7 +1404,7 @@ int main(int argc, char** argv) {
 	
 	std::cout << std::endl;
 	
-	//flea_tests();
+	flea_tests();
 	
 	
 	return (0);

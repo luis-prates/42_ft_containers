@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 01:32:28 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/18 23:19:58 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/18 23:53:54 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,8 @@ namespace ft {
 
 			virtual ~map(void) {
 				_tree_clear(this->_data);
-				delete _ghost;
+				_allocator_rebind_node.destroy(_ghost);
+				_allocator_rebind_node.deallocate(_ghost, sizeof(ft::mapNode<value_type>));
 			}
 
 			map	&operator=(map const &rhs) {
@@ -180,7 +181,7 @@ namespace ft {
 			}
 
 			size_type	max_size(void) const {
-				return (this->_max_size);
+				return (_allocator_rebind_node.max_size());
 			}
 
 			bool	empty(void) const {
@@ -302,7 +303,8 @@ namespace ft {
 					replacementNode->right = ghost;
 					ghost->parent = replacementNode;	
 				}
-				delete nodeToErase;
+				_allocator_rebind_node.destroy(nodeToErase);
+				_allocator_rebind_node.deallocate(nodeToErase, sizeof(ft::mapNode<value_type>));
 				this->_rebalance(parentNode);
 				--this->_size;
 
@@ -528,14 +530,10 @@ namespace ft {
 					_tree_clear(node->left);
 					_tree_clear(node->right);
 					//std::cout << "deleting node with key: " << node->data.first << " value: " << node->data.second << std::endl;
-					delete node;
+					_allocator_rebind_node.destroy(node);
+					_allocator_rebind_node.deallocate(node, sizeof(ft::mapNode<value_type>));
 				}
 	};
-
-	template <class Key, class T, class Compare, class Alloc>
-	const typename map<Key, T, Compare, Alloc>::size_type
-	map<Key, T, Compare, Alloc>::_max_size =
-		std::numeric_limits<difference_type>::max();
 
 	// Non member overloads
 
