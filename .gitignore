@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+containers_test
+ft_containers
+std_containers
+test
+.vscode
