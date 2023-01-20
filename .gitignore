@@ -36,3 +36,5 @@ ft_containers
 std_containers
 test
 .vscode
+
+*.txt

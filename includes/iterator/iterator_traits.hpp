@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 21:41:20 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/06 20:26:58 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/20 21:01:45 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,6 @@ namespace ft {
 	struct forward_iterator_tag : public input_iterator_tag {};
 	struct bidirectional_iterator_tag : public forward_iterator_tag {};
 	struct random_access_iterator_tag : public bidirectional_iterator_tag {};
-
-	/*template<typename _Category, typename _T, typename _Distance = ptrdiff_t,
-           typename _Pointer = _T*, typename _Reference = _T&>
-    struct iterator
-    {
-      typedef _Category		iterator_category;
-      typedef _T			value_type;
-      typedef _Distance		difference_type;
-      typedef _Pointer		pointer;
-      typedef _Reference	reference;
-    };*/
 
 	template <class Iterator>
 	class iterator_traits {

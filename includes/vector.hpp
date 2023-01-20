@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/27 02:12:07 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/18 23:30:37 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/20 21:29:06 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,15 @@ namespace ft {
 			typedef ft::reverse_iterator<iterator> 					reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator> 			const_reverse_iterator;
 
-			protected:
-				typedef random_access_iterator<value_type> super;
-
-			public:
-
-			difference_type		operator-(const random_access_iterator<value_type> &n) const { return super::operator-(n); };
-
-			explicit vector( const allocator_type& alloc = allocator_type()): _alloc(alloc), _size(0), _capacity(0), _ptr(pointer()) {};
+			// Default constructor
+			vector()
+				: _alloc(allocator_type()), _size(0), _capacity(0), _ptr(pointer()) {};
 			
+			// Constructs an empty container with the given allocator
+			explicit vector( const allocator_type& alloc)
+				: _alloc(alloc), _size(0), _capacity(0), _ptr(pointer()) {};
+			
+			// Constructs the container with "count" copies of elements with "value" value
 			explicit vector(
 							size_type count,
 							const value_type& value = value_type(),
@@ -64,7 +64,6 @@ namespace ft {
 			{
 				if (count > max_size())
 					throw std::length_error("Argument size cannot be larger than max size!");
-				//std::cout << "Constructing vector :)\n";
 				_ptr = _alloc.allocate(count);
 				for (size_type i = 0; i < count; i++)
 					_alloc.construct(_ptr + i, value);
@@ -72,7 +71,6 @@ namespace ft {
 			};
 			
 			// Constructs the container with the contents of the range [first, last).
-			// This constructor has the same effect as vector(static_cast<size_type>(first), static_cast<value_type>(last), a) if InputIt is an integral type.
 			template< class InputIt >
 			vector(
 					InputIt first,
@@ -89,7 +87,7 @@ namespace ft {
 				}
 			}
 			
-			// Copy constructor. Constructs the container with the copy of the contents of other.
+			// Copy constructor. Constructs the container with the copy of the contents of "other".
 			vector(const vector& src): _alloc(allocator_type()), _size(src._size), _capacity(src._size), _ptr(NULL) {
 				if (src._size > 0) {
 					_ptr = _alloc.allocate(src.size());
@@ -106,63 +104,79 @@ namespace ft {
 				_capacity = 0;
 			};
 
+			// Member functions
 			
-
-			void clear() {
-				for (size_type i = 0; i < _size; i++)
-					_alloc.destroy(_ptr + i);
-				_size = 0;
+			vector&	operator=(const vector& x) {
+				if (this != &x)
+					assign(x.begin(), x.end());
+				return (*this);
 			}
 
-			size_type size() const {
-				return (_size);
+			template <class InputIt>
+			void assign(InputIt first, InputIt last, typename enable_if<!is_integral<InputIt>::value>::type * = 0) {
+				clear();
+				size_type idx = ft::itlen(first, last);
+				resize(idx);
+				for (size_type i = 0; i < idx; i++, first++)
+					_alloc.construct(_ptr + i, *first);
 			}
-			
-			size_type max_size() const {
-				return (_alloc.max_size());
+
+			void assign(size_type n, const value_type& val) {
+				clear();
+				resize(n, val);
+			}
+
+			allocator_type get_allocator() const {
+				return (_alloc);
+			}
+
+			// Element access
+
+			reference at(size_type n) {
+				if (n >= _size)
+					throw std::out_of_range(_at_exception_msg(n));
+				return (reference(_ptr[n]));
+			}
+
+			const_reference at(size_type n) const {
+				if (n >= _size)
+					throw std::out_of_range(_at_exception_msg(n));
+				return (reference(_ptr[n]));
+			}
+
+			reference operator[](size_type n) {
+				return reference(_ptr[n]);
 			};
 
-			size_type capacity() const {
-				return (_capacity);
+			const_reference	operator[](size_type n) const {
+				return const_reference(_ptr[n]);
+			};
+
+			reference front() {
+				return (*_ptr);
 			}
 
-			bool empty() const {
-				return (_size == 0);
+			const_reference front() const {
+				return (*_ptr);
 			}
 
-			void reserve(size_type n) {
-				if (n > max_size())
-					throw std::length_error("vector::reserve");
-				if (n > _capacity && _capacity == 0) {
-					pointer temp = _alloc.allocate(n);
-					_ptr = temp;
-					_capacity = n;
-				}
-				if (n > _capacity) {
-					pointer tmp = _alloc.allocate(n);
-					for (size_type i = 0; i < _size; i++)
-						_alloc.construct(tmp + i, _ptr[i]);
-					size_type tmp_size = _size;
-					clear();
-					_alloc.deallocate(_ptr, _capacity);
-					_ptr = tmp;
-					_size = tmp_size;
-					_capacity = n;
-				}
+			reference back() {
+				return (*(_ptr + _size - 1));
 			}
 
-			void resize(size_type n, value_type val = value_type()) {
-				if (n > _capacity)
-					reserve(n);
-				if (n > _size) {
-					for (size_type i = _size; i < n; i++)
-						push_back(val);
-				} else if (n < _size) {
-					for (size_type i = n; i < _size; i++)
-						_alloc.destroy(_ptr + i);
-					_size = n;
-				}
+			const_reference back() const {
+				return (*(_ptr + _size - 1));
 			}
+
+			pointer data() {
+				return (pointer(_ptr));
+			}
+
+			const_pointer data() const {
+				return (const_pointer(_ptr));
+			}
+
+			// Iterators
 
 			iterator begin() {
 				return (iterator(_ptr));
@@ -195,86 +209,62 @@ namespace ft {
 			const_reverse_iterator rend() const {
 				return (const_reverse_iterator(_ptr));
 			}
+			
+			// Capacity
 
-			reference operator[](size_type n) {
-				return reference(_ptr[n]);
-			};
+			bool empty() const {
+				return (_size == 0);
+			}
 
-			const_reference operator[](size_type n) const {
-				return const_reference(_ptr[n]);
-			};
-
-			vector& operator=(const vector& x) {
-				if (this != &x)
-					assign(x.begin(), x.end());
-				return (*this);
+			size_type size() const {
+				return (_size);
 			}
 			
-			reference at(size_type n) {
-				if (n >= _size)
-					throw std::out_of_range(_at_exception_msg(n));
-				return (reference(_ptr[n]));
-			}
+			size_type max_size() const {
+				return (_alloc.max_size());
+			};
 
-			const_reference at(size_type n) const {
-				if (n >= _size)
-					throw std::out_of_range(_at_exception_msg(n));
-				return (reference(_ptr[n]));
-			}
-
-			reference front() {
-				return (*_ptr);
-			}
-
-			const_reference front() const {
-				return (*_ptr);
-			}
-
-			reference back() {
-				return (*(_ptr + _size - 1));
-			}
-
-			const_reference back() const {
-				return (*(_ptr + _size - 1));
-			}
-
-			template <class InputIt>
-			void assign(InputIt first, InputIt last, typename enable_if<!is_integral<InputIt>::value>::type * = 0) {
-				clear();
-				size_type idx = ft::itlen(first, last);
-				resize(idx);
-				for (size_type i = 0; i < idx; i++, first++)
-					_alloc.construct(_ptr + i, *first);
-			}
-
-			void assign(size_type n, const value_type& val) {
-				clear();
-				resize(n, val);
-			}
-			
-			void push_back(const value_type &val) {
-				if (!_capacity)
-					reserve(1);
-				else if (_size >= _capacity)
-					reserve(2 * _capacity);
-				_alloc.construct(_ptr + _size++, val);
-			}
-
-			void pop_back() {
-				if (!empty()) {
-					_alloc.destroy(_ptr + _size - 1);
-					_size--;
+			void reserve(size_type n) {
+				if (n > max_size())
+					throw std::length_error("vector::reserve");
+				if (n > _capacity && _capacity == 0) {
+					pointer temp = _alloc.allocate(n);
+					_ptr = temp;
+					_capacity = n;
+				}
+				if (n > _capacity) {
+					pointer tmp = _alloc.allocate(n);
+					for (size_type i = 0; i < _size; i++)
+						_alloc.construct(tmp + i, _ptr[i]);
+					size_type tmp_size = _size;
+					clear();
+					_alloc.deallocate(_ptr, _capacity);
+					_ptr = tmp;
+					_size = tmp_size;
+					_capacity = n;
 				}
 			}
 
-			iterator insert(iterator position, const value_type &val) {
+			size_type capacity() const {
+				return (_capacity);
+			}
+
+			// Modifiers
+
+			void clear() {
+				for (size_type i = 0; i < _size; i++)
+					_alloc.destroy(_ptr + i);
+				_size = 0;
+			}
+
+			iterator insert(const_iterator position, const value_type &val) {
 				size_type idx = position - begin();
 				pointer idx_ptr;
 				
 				while (_capacity < _size + 1)
 					reserve((_capacity == 0 ? 1 : _capacity * 2));
 				idx_ptr = _ptr + idx;
-				std::copy(idx_ptr, end().base(), idx_ptr + 1);
+				std::copy(idx_ptr, _ptr + _size, idx_ptr + 1);
 				_alloc.construct(idx_ptr, val);
 				_size++;
 				return (idx_ptr);
@@ -287,7 +277,7 @@ namespace ft {
 				if (_capacity < _size + n)
 					reserve(_size + n);
 				idx_ptr = _ptr + idx;
-				std::copy(idx_ptr, end().base(), idx_ptr + n);
+				std::copy(idx_ptr, _ptr + _size, idx_ptr + n);
 				idx_ptr = _ptr + idx;
 				while (n--)
 				{
@@ -305,7 +295,7 @@ namespace ft {
 				while (_capacity < _size + n)
 					reserve((_capacity == 0 ? 1 : _capacity * 2));
 				idx_ptr = _ptr + idx;
-				std::copy(idx_ptr, end().base(), idx_ptr + n);
+				std::copy(idx_ptr, _ptr + _size, idx_ptr + n);
 				for (size_type i = 0; first != last ; first++, i++, _size++)
 					_alloc.construct(idx_ptr + i, *first);
 			}
@@ -315,7 +305,7 @@ namespace ft {
 				pointer idx_ptr = _ptr + idx;
 				pointer offset_ptr = idx_ptr + 1;
 				
-				for (; offset_ptr != end().base(); (void)++idx_ptr, (void)++offset_ptr) {
+				for (; offset_ptr != _ptr + _size; (void)++idx_ptr, (void)++offset_ptr) {
 					*idx_ptr = *offset_ptr;
 				}
 				pop_back();
@@ -328,12 +318,40 @@ namespace ft {
 				pointer idx_ptr = _ptr + idx;
 				pointer offset_ptr = idx_ptr + n;
 				
-				for (; offset_ptr != end().base(); (void)++idx_ptr, (void)++offset_ptr) {
+				for (; offset_ptr != _ptr + _size; (void)++idx_ptr, (void)++offset_ptr) {
 					*idx_ptr = *offset_ptr;
 				}
 				while (n-- > 0)
 					pop_back();
 				return (first);
+			}
+
+			void push_back(const value_type &val) {
+				if (!_capacity)
+					reserve(1);
+				else if (_size >= _capacity)
+					reserve(2 * _capacity);
+				_alloc.construct(_ptr + _size++, val);
+			}
+
+			void pop_back() {
+				if (!empty()) {
+					_alloc.destroy(_ptr + _size - 1);
+					_size--;
+				}
+			}
+
+			void resize(size_type n, value_type val = value_type()) {
+				if (n > _capacity)
+					reserve(n);
+				if (n > _size) {
+					for (size_type i = _size; i < n; i++)
+						push_back(val);
+				} else if (n < _size) {
+					for (size_type i = n; i < _size; i++)
+						_alloc.destroy(_ptr + i);
+					_size = n;
+				}
 			}
 
 			void swap(vector& x) {
@@ -342,18 +360,6 @@ namespace ft {
 				std::swap(_size, x._size);
 			}
 
-			allocator_type get_allocator() const {
-				return (_alloc);
-			}
-
-			pointer data() {
-				return (pointer(_ptr));
-			}
-
-			const_pointer data() const {
-				return (const_pointer(_ptr));
-			}
-			
 		private:
 			allocator_type		_alloc;
 			size_type			_size;
@@ -400,8 +406,8 @@ namespace ft {
 	}
 
 	template <class T, class Alloc>
-	void swap(vector<T,Alloc> &x, vector<T,Alloc> &y) {
-		x.swap(y);
+	void swap(vector<T,Alloc> &lhs, vector<T,Alloc> &rhs) {
+		lhs.swap(rhs);
 	}
 
 }

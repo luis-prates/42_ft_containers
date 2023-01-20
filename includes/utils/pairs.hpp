@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 23:19:53 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/18 23:06:02 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/20 21:35:56 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,8 @@ namespace ft {
 			pair& operator=(const pair &other) {
 				if (this != &other)
 				{
-					//delete this;
-					//pair *temp = new pair(other);
 					first = other.first;
 					second = other.second;
-					//return (*temp);
 				}
 				return (*this);
 			}
@@ -43,8 +40,6 @@ namespace ft {
 			second_type	second;
 	};
 
-	// https://en.cppreference.com/w/cpp/utility/pair/operator_cmp
-	
 	template <class T1, class T2>
 	bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
 		return (lhs.first == rhs.first && lhs.second == rhs.second);
@@ -57,7 +52,6 @@ namespace ft {
 
 	template <class T1, class T2>
 	bool operator< (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
-		//return lhs.first<rhs.first || (!(rhs.first<lhs.first) && lhs.second<rhs.second);
 		return (lhs.first < rhs.first ? true : (rhs.first < lhs.first ? false : (lhs.second < rhs.second ? true : false)));
 	}
 

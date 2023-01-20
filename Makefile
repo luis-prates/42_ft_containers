@@ -1,16 +1,14 @@
 clear_terminal := clear
 CXX = c++
-CXXFLAGS := -std=c++98 -Wall -Wextra -Werror -g #-fsanitize=address
-FT = 0
-FTFLAGS := "-D=FT $(FT)"
+CXXFLAGS := -std=c++98 -Wall -Wextra -Werror -g -fsanitize=address
 library_option := -l
 NAME_STD = std_containers
 NAME_FT = ft_containers
 output_name_option := -o
 remove_file := rm
 remove_file_option := -f
-rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
-SRCS := $(call rwildcard,./src,*.cpp)
+#rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
+SRCS := ./src/main.cpp
 INC_DIR = includes
 INC := -I $(INC_DIR)
 OBJS_STD = $(SRCS:cpp=std.o)

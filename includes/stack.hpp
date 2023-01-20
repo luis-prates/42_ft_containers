@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 17:43:47 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/06 17:43:51 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/20 21:37:34 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,31 @@ class stack {
 		typedef Container								container_type;
 		typedef typename Container::size_type			size_type;
 
-		explicit stack (const container_type& ctnr = container_type())	: c(ctnr)
-		{};
+		explicit stack (const container_type& ctnr = container_type())	: c(ctnr) {};
 
-		bool empty() const { return c.empty(); };
-		size_type size() const { return c.size(); };
-		value_type & top() { return c.back(); };
-		const value_type & top() const { return c.back(); };
-		void push (const value_type& val) { c.push_back(val); };
-		void pop() { c.pop_back(); };
+		bool empty() const {
+			return c.empty();
+		};
+		
+		size_type size() const {
+			return c.size();
+		};
+		
+		value_type& top() {
+			return c.back();
+		};
+		
+		const value_type& top() const {
+			return c.back();
+		};
+		
+		void push (const value_type& val) {
+			c.push_back(val);
+		};
+		
+		void pop() {
+			c.pop_back();
+		};
 
 		template <class TF, class ContainerF>
 			friend bool operator== (const stack<TF,ContainerF>& lhs, const stack<TF,ContainerF>& rhs);
