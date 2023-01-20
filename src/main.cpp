@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 22:05:17 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/20 23:29:57 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/20 23:37:40 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1433,7 +1433,7 @@ int main(int argc, char** argv) {
 	const int seed = atoi(argv[1]);
 	srand(seed);
 
-	/*subject_tests();
+	subject_tests();
 	iter = 0;
 	//tricky_erase();
 	iter = 0;
@@ -1457,7 +1457,7 @@ int main(int argc, char** argv) {
 	map_int.insert(ft::make_pair(6, 2));
 
 	map_int.erase(3);
-	map_int.insert(ft::make_pair(-10, 2));*/
+	map_int.insert(ft::make_pair(-10, 2));
 
 	empty_test();
 	
