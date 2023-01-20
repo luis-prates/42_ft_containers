@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 22:05:17 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/20 22:29:32 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/20 23:29:57 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@
 #endif
 
 #include <stdlib.h>
-//#include "../includes/ft_containers.hpp"
 
 # define BLACK	"\033[0;30m"
 # define RED	"\033[0;31m"
@@ -55,6 +54,17 @@ struct Buffer
 #define T1 int
 #define T2 std::string
 typedef ft::pair<T1, T2> T3;
+
+// empty
+#define EMPT1 char
+#define EMPT2 int
+typedef ft::pair<const EMPT1, EMPT2> EMPT3;
+
+template <class T>
+void	is_empty(T const &mp)
+{
+	std::cout << "is_empty: " << mp.empty() << std::endl;
+}
 
 // insert
 /*#define T1 int
@@ -211,6 +221,36 @@ void	subject_tests(void)
 	{
 		std::cout << *it;
 	}
+}
+
+void	empty_test()
+{
+	std::list<EMPT3> lst;
+	unsigned int lst_size = 7;
+	for (unsigned int i = 0; i < lst_size; ++i)
+		lst.push_back(EMPT3('a' + i, lst_size - i));
+
+	ft::map<EMPT1, EMPT2> mp(lst.begin(), lst.end()), mp2;
+	ft::map<EMPT1, EMPT2>::iterator it;
+
+	lst.clear();
+	is_empty(mp);
+	printSize(mp);
+
+	is_empty(mp2);
+	mp2 = mp;
+	is_empty(mp2);
+
+	it = mp.begin();
+	for (unsigned long int i = 3; i < mp.size(); ++i)
+		it++->second = i * 7;
+
+	printSize(mp);
+	printSize(mp2);
+
+	mp2.clear();
+	is_empty(mp2);
+	printSize(mp2);
 }
 
 void	tricky_erase(void)
@@ -1393,7 +1433,7 @@ int main(int argc, char** argv) {
 	const int seed = atoi(argv[1]);
 	srand(seed);
 
-	subject_tests();
+	/*subject_tests();
 	iter = 0;
 	//tricky_erase();
 	iter = 0;
@@ -1417,7 +1457,9 @@ int main(int argc, char** argv) {
 	map_int.insert(ft::make_pair(6, 2));
 
 	map_int.erase(3);
-	map_int.insert(ft::make_pair(-10, 2));
+	map_int.insert(ft::make_pair(-10, 2));*/
+
+	empty_test();
 	
 	return (0);
 }

@@ -1,6 +1,6 @@
 clear_terminal := clear
 CXX = c++
-CXXFLAGS := -std=c++98 -Wall -Wextra -Werror -g -fsanitize=address
+CXXFLAGS := -std=c++98 -Wall -Wextra -Werror -g #-fsanitize=address
 library_option := -l
 NAME_STD = std_containers
 NAME_FT = ft_containers

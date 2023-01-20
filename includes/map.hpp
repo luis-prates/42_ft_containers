@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 01:32:28 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/20 22:01:10 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/20 23:32:29 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,8 +115,8 @@ namespace ft {
 					return (*this);
 					
 				this->clear();
-				this->_data = _allocator_rebind_node.allocate(sizeof(ft::mapNode<value_type>));
-				_allocator_rebind_node.construct(this->_data, value_type());
+				//this->_data = _allocator_rebind_node.allocate(sizeof(ft::mapNode<value_type>));
+				//_allocator_rebind_node.construct(this->_data, value_type());
 				
 				this->_ghost = _data;
 				this->_ghost->height = 0;
