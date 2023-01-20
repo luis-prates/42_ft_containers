@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 21:41:58 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/19 00:13:01 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/20 22:30:28 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ namespace ft {
 
 			mapNode(const mapNode<T> &src) : data(src.data)
 			{
-				//this->data(src.data);
 				this->parent = src.parent;
 				this->left = src.left;
 				this->right = src.right;
@@ -50,7 +49,7 @@ namespace ft {
 					this->height = rhs.height;
 				}
 
-				return *this;
+				return (*this);
 			}
 
 	};
@@ -83,8 +82,9 @@ namespace ft {
 
 	template <class T>
 	mapNode<T> *farLeft(mapNode<T> *node) {
-		if (node->left == NULL) return node;
-			return farLeft(node->left);
+		if (node->left == NULL)
+			return (node);
+		return (farLeft(node->left));
 	}
 	
 	template <class T>
@@ -92,13 +92,13 @@ namespace ft {
 		if (node == NULL) {
 			return 0;
 		} else {
-			return node->height;
+			return (node->height);
 		}
 	}
 
 	template <class T>
 	int balanceFactor(mapNode<T> *node) {
-		return height(node->left) - height(node->right);
+		return (height(node->left) - height(node->right));
 	}
 
 	template <class T>

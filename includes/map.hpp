@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 01:32:28 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/18 23:53:54 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/20 22:01:10 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ namespace ft {
 			typedef ptrdiff_t														difference_type;
 			typedef size_t															size_type;
 
-			class value_compare : std::binary_function<value_type, value_type, bool> {
+			class value_compare {
 				private:
 					friend class map;
 
@@ -66,12 +66,14 @@ namespace ft {
 			};
 
 			explicit map(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
-				: _data(), _key_cmp(comp), _alloc(alloc), _size(0)  {
-					this->_data = _allocator_rebind_node.allocate(sizeof(ft::mapNode<value_type>));
-					_allocator_rebind_node.construct(this->_data, value_type());
-					this->_ghost = _data;
-					this->_ghost->height = 0;
-					this->_data->parent = NULL;
+				: _data(), _key_cmp(comp), _alloc(alloc), _size(0)
+			{
+				this->_data = _allocator_rebind_node.allocate(sizeof(ft::mapNode<value_type>));
+				_allocator_rebind_node.construct(this->_data, value_type());
+				
+				this->_ghost = _data;
+				this->_ghost->height = 0;
+				this->_data->parent = NULL;
 			}
 
 			template <class Ite>
@@ -80,18 +82,22 @@ namespace ft {
 				Ite last,
 				const key_compare &comp = key_compare(),
 				const allocator_type &alloc = allocator_type()
-				) : _data(), _key_cmp(comp), _alloc(alloc), _size(0) {
-					this->_data = _allocator_rebind_node.allocate(sizeof(ft::mapNode<value_type>));
-					_allocator_rebind_node.construct(this->_data, value_type());
-					this->_ghost = _data;
-					this->_ghost->height = 0;
-					this->_data->parent = NULL;
-					this->_create_data_it(first, last);
-			}
-
-			map(const map &src) : _data(), _key_cmp(key_compare()), _alloc(allocator_type()), _size(0) {
+				) : _data(), _key_cmp(comp), _alloc(alloc), _size(0)
+			{
 				this->_data = _allocator_rebind_node.allocate(sizeof(ft::mapNode<value_type>));
 				_allocator_rebind_node.construct(this->_data, value_type());
+				
+				this->_ghost = _data;
+				this->_ghost->height = 0;
+				this->_data->parent = NULL;
+				this->_create_data_it(first, last);
+			}
+
+			map(const map &src) : _data(), _key_cmp(key_compare()), _alloc(allocator_type()), _size(0)
+			{
+				this->_data = _allocator_rebind_node.allocate(sizeof(ft::mapNode<value_type>));
+				_allocator_rebind_node.construct(this->_data, value_type());
+				
 				this->_ghost = _data;
 				this->_ghost->height = 0;
 				this->_data->parent = NULL;
@@ -107,9 +113,11 @@ namespace ft {
 			map	&operator=(map const &rhs) {
 				if (this == &rhs)
 					return (*this);
+					
 				this->clear();
 				this->_data = _allocator_rebind_node.allocate(sizeof(ft::mapNode<value_type>));
 				_allocator_rebind_node.construct(this->_data, value_type());
+				
 				this->_ghost = _data;
 				this->_ghost->height = 0;
 				this->_data->parent = NULL;
@@ -127,13 +135,13 @@ namespace ft {
 				iterator it = this->find(key);
 				if (it == this->end())
 					throw std::out_of_range("map::at:  key not found");
-				return it->second;
+				return (it->second);
 			}
 			const mapped_type& at(const key_type& key) const {
 				const_iterator it = this->find(key);
 				if (this->end() == it )
 					throw std::out_of_range("map::at:  key not found");
-				return it->second;
+				return (it->second);
 			}
 
 			mapped_type	&operator[](const key_type &k) {
@@ -204,7 +212,7 @@ namespace ft {
 					else if (_key_cmp(current->data.first, val.first))
 						current = current->right;
 					else
-						return ft::make_pair(iterator(current), false);
+						return (ft::make_pair(iterator(current), false));
 				}
 
 				current = _allocator_rebind_node.allocate(sizeof(ft::mapNode<value_type>));
@@ -230,10 +238,8 @@ namespace ft {
 					}
 				}
 				this->_rebalance(current);
-
 				++this->_size;
-
-				return ft::make_pair(iterator(current), true);
+				return (ft::make_pair(iterator(current), true));
 			}
 
 			iterator	insert(iterator position, const value_type &val) {
@@ -259,13 +265,13 @@ namespace ft {
 				if (it == this->end())
 					return 0;
 
-				node_ptr nodeToErase = it._node;
-				node_ptr replacementNode = NULL;
+				node_ptr	nodeToErase = it._node;
+				node_ptr	replacementNode = NULL;
 				node_ptr	ghost = this->end()._node;
-				node_ptr parentNode = nodeToErase->parent;
-				bool isLeftChild = (parentNode != NULL && parentNode->left == nodeToErase);
+				node_ptr	parentNode = nodeToErase->parent;
+				bool		isLeftChild = (parentNode != NULL && parentNode->left == nodeToErase);
 
-				if (nodeToErase->left == NULL || (nodeToErase->right == NULL || nodeToErase->right == ghost))
+				if (nodeToErase->left == NULL || nodeToErase->right == NULL || nodeToErase->right == ghost)
 					replacementNode = (nodeToErase->left == NULL) ? nodeToErase->right : nodeToErase->left;
 				else
 				{
@@ -376,13 +382,8 @@ namespace ft {
 				size_type		res = 0;
 
 				while (it != ite)
-				{
 					if (this->_key_eq((it++)->first, k))
-					{
-						++res;
-						break ; // Because map can't have the same key twice (or more)
-					}
-				}
+						return (++res);
 				return (res);
 			}
 
@@ -451,9 +452,9 @@ namespace ft {
 			}
 
 			private:
-				typedef ft::mapNode<value_type>		node_type;
-				typedef node_type					*node_ptr;
-				typedef typename allocator_type::template rebind<ft::mapNode<value_type> >::other			allocator_rebind_node;
+				typedef ft::mapNode<value_type>														node_type;
+				typedef node_type																	*node_ptr;
+				typedef typename allocator_type::template rebind<ft::mapNode<value_type> >::other	allocator_rebind_node;
 
 				node_ptr							_data;
 				key_compare							_key_cmp;
@@ -469,13 +470,9 @@ namespace ft {
 				}
 
 				void	_cpy_content(map &src) {
-					//this->clear();
 					_tree_clear(this->_data);
 					this->_data = _ghost;
-					
-
 					node_ptr tmp = this->_data;
-					
 					this->_data = src._data;
 					this->_key_cmp = src._key_cmp;
 					this->_alloc = src._alloc;

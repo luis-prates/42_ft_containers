@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 22:05:17 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/18 23:55:01 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/20 22:29:32 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1405,7 +1405,19 @@ int main(int argc, char** argv) {
 	std::cout << std::endl;
 	
 	flea_tests();
-	
+
+	ft::map<int, int> map_int;
+
+	map_int.insert(ft::make_pair(0, 0));
+	map_int.insert(ft::make_pair(1, 1));
+	map_int.insert(ft::make_pair(2, 2));
+	map_int.insert(ft::make_pair(3, 2));
+	map_int.insert(ft::make_pair(4, 2));
+	map_int.insert(ft::make_pair(5, 2));
+	map_int.insert(ft::make_pair(6, 2));
+
+	map_int.erase(3);
+	map_int.insert(ft::make_pair(-10, 2));
 	
 	return (0);
 }
