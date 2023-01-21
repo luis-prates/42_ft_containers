@@ -6,7 +6,7 @@
 /*   By: lprates <lprates@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/06 17:43:47 by lprates           #+#    #+#             */
-/*   Updated: 2023/01/20 21:37:34 by lprates          ###   ########.fr       */
+/*   Updated: 2023/01/20 23:58:36 by lprates          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ class stack {
 			return c.back();
 		};
 		
-		void push (const value_type& val) {
+		void push(const value_type& val) {
 			c.push_back(val);
 		};
 		
